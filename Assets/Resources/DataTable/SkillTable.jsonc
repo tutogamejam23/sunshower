@@ -1,0 +1,119 @@
+// 1000~1999: 플레이어 스킬
+// 2000~2999: 몹 스킬
+// 3000~3999: 보스 스킬
+[
+  {
+    // 플레이어 스킬
+    "id": 1000,
+    "name": "여우콩",
+    "description": "여우콩 스킬 설명",
+    "cost": 15,
+    "time": 5 // 속박 지속시간
+  },
+  {
+    // 플레이어 스킬
+    "id": 1001,
+    "name": "여우구슬",
+    "description": "여우구슬 스킬 설명",
+    "cost": 30,
+    "time": 5 // 매혹 지속시간
+  },
+  {
+    // 플레이어 스킬
+    "id": 1002,
+    "name": "캥!",
+    "description": "캥! 스킬 설명",
+    "cost": 50
+  },
+  {
+    // 플레이어 스킬
+    "id": 1003,
+    "name": "여우비",
+    "description": "여우비 스킬 설명",
+    "cost": 30,
+    "heal_amount": 10, // 회복량
+    "speed_decrese_rate": 0.3, // 속도 감소 비율 (%)
+    "speed_decrease_time": 5 // 속도 감소 지속시간
+  },
+  {
+    // 정찰병 일반 공격
+    "id": 2000,
+    "name": "정찰병 일반 공격",
+    "description": "",
+    "damage": 10,
+    "cooldown": 1,
+    "range": 2
+  },
+  {
+    // 총잡이 일반 공격
+    "id": 2001,
+    "name": "총잡이 일반 공격",
+    "description": "",
+    "damage": 30,
+    "cooldown": 0.8,
+    "range": 10
+  },
+  {
+    // 고라니 일반 공격
+    "id": 2002,
+    "name": "고라니 일반 공격",
+    "description": "",
+    "damage": 5,
+    "cooldown": 1,
+    "range": 3
+  },
+  {
+    // 호랑이 일반 공격
+    "id": 2003,
+    "name": "호랑이 일반 공격",
+    "description": "",
+    "damage": 15,
+    "cooldown": 1.2,
+    "range": 5
+  },
+  {
+    // 소환요괴 일반 공격
+    "id": 2004,
+    "name": "소환요괴 일반 공격",
+    "description": "",
+    "damage": 30,
+    "cooldown": 1,
+    "range": 4
+  },
+  {
+    // 퇴마사 일반 공격
+    "id": 3000,
+    "name": "퇴마사 일반 공격",
+    "description": "",
+    "damage": 100,
+    "range": 5,
+    "cooldown": 1.6
+  },
+  {
+    // 퇴마사 스킬
+    "id": 3001,
+    "name": "멸 (滅)",
+    "description": "멸 (滅) 스킬 설명",
+    "cooldown": 15,
+    "damage": 10,
+    "range": 5
+  },
+  {
+    // 퇴마사 스킬
+    "id": 3002,
+    "name": "현 (顯)",
+    "description": "현 (顯) 스킬 설명",
+    "cooldown": 15,
+    "spawn_mob_id": [1, 2],
+    "spawn_mob_count": [3, 3]
+  },
+  {
+    // 퇴마사 스킬
+    "id": 3003,
+    "name": "봉 (封)",
+    "description": "봉 (封) 스킬 설명",
+    "cooldown": 15,
+    "damage": 100,
+    "range": 5
+  }
+]
