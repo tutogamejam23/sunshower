@@ -44,6 +44,13 @@ namespace Sunshower
                 state.EntityManager.AddComponent<PlayerComponent>(playerEntity);
                 state.EntityManager.AddComponent<SkillComponent>(playerEntity);
             }
+
+            var data = SystemAPI.GetSingletonRW<PlayerDataComponent>();
+            ref var blob = ref data.ValueRO.PlayerData.Value;
+
+            Debug.Log($"player name: {blob.Name.ToString()}");
+            Debug.Log($"player hp: {blob.HP}");
+            Debug.Log($"player skill count: {blob.Skills.Length}");
         }
     }
 

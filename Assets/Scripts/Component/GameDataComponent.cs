@@ -37,12 +37,6 @@ namespace Sunshower
     /// </summary>
     public struct PlayerData
     {
-        /*
-        id: integer
-        name: string
-        hp: integer
-        skills: array<integer>
-        */
         public int ID;
         public BlobString Name;
         public int HP;
@@ -54,14 +48,6 @@ namespace Sunshower
     /// </summary>
     public struct MobData
     {
-        /*
-        id: integer
-        name: string
-        hp: integer
-        speed: float
-        skills: array<integer>
-        */
-
         public int ID;
         public BlobString Name;
         public int HP;
@@ -79,32 +65,19 @@ namespace Sunshower
     /// </summary>
     public struct SkillData
     {
-        /*
-        id: integer
-        name: string
-        description: string
-        cost: integer
-        cooldown: float
-        damage: integer
-        range: float
-        duration: float
-        speed_decrease_rate: float
-        speed_decrease_time: float
-        spawn_mob_id: array<integer>
-        spawn_mob_count: array<integer>
-         */
         public int ID;
         public BlobString Name;
         public BlobString Description;
         public int Cost;
-        public float CoolDown;
+        public float Cooldown;
         public int Damage;
         public float Range;
         public float Duration;
+        public int HealAmount;
         public float SpeedDecreaseRate;
         public float SpeedDecreaseTime;
-        public BlobArray<int> SpawnMobID;
-        public BlobArray<int> SpawnMobCount;
+        public BlobArray<int> SpawnMobIDs;
+        public BlobArray<int> SpawnMobCounts;
     }
 
     public struct SkillDataPool

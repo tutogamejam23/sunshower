@@ -1,0 +1,44 @@
+# 100~199: 동물
+# 200~299: 적
+
+# ID: integer
+# Name: string
+# HP: integer
+# Speed: float
+# Skills: array<integer>
+
+- ID: 100
+  Name: 고라니
+  HP: 30
+  Speed: 10
+  Skills: [2002]
+
+- ID: 101
+  Name: 호랑이
+  HP: 50
+  Speed: 15
+  Skills: [2003]
+
+- ID: 102
+  Name: 소환요괴
+  HP: 30
+  Speed: 15
+  Skills: [2004]
+
+- ID: 200
+  Name: 정찰병
+  HP: 100
+  Speed: 10
+  Skills: [2000]
+
+- ID: 201
+  Name: 총잡이
+  HP: 200
+  Speed: 10
+  Skills: [2001]
+
+- ID: 202
+  Name: 퇴마사
+  HP: 10000
+  Speed: 10
+  Skills: [3000, 3001, 3002, 3003]
