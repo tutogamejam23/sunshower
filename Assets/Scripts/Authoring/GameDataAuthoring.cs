@@ -176,6 +176,7 @@ namespace Sunshower
                 skill.Damage = data.Damage;
                 skill.Range = data.Range;
                 skill.Duration = data.Duration;
+                skill.HealAmount = data.HealAmount;
                 skill.SpeedDecreaseRate = data.SpeedDecreaseRate;
                 skill.SpeedDecreaseTime = data.SpeedDecreaseTime;
                 var spawnMobIDs = builder.Allocate(ref skill.SpawnMobIDs, data.SpawnMobIDs.Length);
