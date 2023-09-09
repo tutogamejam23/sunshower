@@ -1,28 +1,17 @@
-using System;
-
 using Unity.Entities;
-
-using UnityEngine;
 
 namespace Sunshower
 {
     public struct PlayerComponent : IComponentData
     {
+        public Entity Entity;
     }
 
-    public class PlayerPrefabComponent : IComponentData
+    public readonly partial struct PlayerAspect : IAspect
     {
-        public GameObject Prefab;
-        public Vector2 SpawnPosition;
-    }
-
-    public class PlayerInstanceComponent : IComponentData, IDisposable
-    {
-        public GameObject Instance;
-
-        public void Dispose()
-        {
-            UnityEngine.Object.Destroy(Instance);
-        }
+        public readonly Entity Entity;
+        public readonly RefRW<GameEntityComponent> GameEntity;
+        public readonly RefRW<PlayerComponent> Player;
+        public readonly RefRW<SkillComponent> Skill;
     }
 }

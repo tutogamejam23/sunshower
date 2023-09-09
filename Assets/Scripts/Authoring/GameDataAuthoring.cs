@@ -1,12 +1,13 @@
-using System;
-using System.Collections.Generic;
-
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Entities.Content;
 
 using UnityEngine;
 
 using YamlDotNet.Serialization;
+
+using EntityDataBufferElement = Sunshower.GameDataBufferElement<Sunshower.GameEntityData>;
+using SkillDataBufferElement = Sunshower.GameDataBufferElement<Sunshower.SkillData>;
 
 namespace Sunshower
 {
@@ -19,159 +20,142 @@ namespace Sunshower
 
         private static readonly IDeserializer DataTableDeserializer =
             new DeserializerBuilder()
-            //.IgnoreUnmatchedProperties()
             .Build();
 
         private class Baker : Baker<GameDataAuthoring>
         {
             public override void Bake(GameDataAuthoring authoring)
             {
-                BlobAssetReference<PlayerData> playerBlobRef = LoadPlayerTable();
-                BlobAssetReference<MobDataPool> mobsBlobRef = LoadMobTable();
-                BlobAssetReference<SkillDataPool> skillsBlobRef = LoadSkilTable();
-
                 Entity entity = GetEntity(TransformUsageFlags.None);
-                AddComponent(entity, new PlayerDataComponent(playerBlobRef));
-                AddComponent(entity, new MobDataPoolComponent(mobsBlobRef));
-                AddComponent(entity, new SkillDataPoolComponent(skillsBlobRef));
-            }
-        }
+                AddComponent(entity, new GameDataComponent { Entity = entity });
 
-        private class PlayerDataRaw
-        {
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public int HP { get; set; }
-            public int[] Skills { get; set; } = Array.Empty<int>();
-        }
+                // 플레이어든 몹이든 전부 GameEntity 취급이며 이를 구분하기 위해 EntityType을 사용한다.
+                var entityDataBuffer = AddBuffer<EntityDataBufferElement>(entity);
+                ImportTableToBuffer<GameEntityDataRaw, GameEntityData>(PlayerTablePath, ref entityDataBuffer, ConvertPlayerData);
+                ImportTableToBuffer<GameEntityDataRaw, GameEntityData>(MobTablePath, ref entityDataBuffer, ConvertMobData);
+                var entityDataList = entityDataBuffer.ToNativeArray(Allocator.Temp);
 
-        private class MobDataRaw
-        {
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public int HP { get; set; }
-            public float Speed { get; set; }
-            public int[] Skills { get; set; } = Array.Empty<int>();
-        }
-
-        private class SkillDataRaw
-        {
-            public int ID { get; set; }
-            public string Name { get; set; }
-            public string Description { get; set; }
-            public int Cost { get; set; }
-            public float Cooldown { get; set; }
-            public int Damage { get; set; }
-            public float Range { get; set; }
-            public float Duration { get; set; }
-            public int HealAmount { get; set; }
-            public float SpeedDecreaseRate { get; set; }
-            public float SpeedDecreaseTime { get; set; }
-            public int[] SpawnMobIDs { get; set; } = Array.Empty<int>();
-            public int[] SpawnMobCounts { get; set; } = Array.Empty<int>();
-        }
-
-        private static BlobAssetReference<PlayerData> LoadPlayerTable()
-        {
-            var asset = Resources.Load<TextAsset>(PlayerTablePath);
-            var table = DataTableDeserializer.Deserialize<PlayerDataRaw>(asset.text);
-            var builder = new BlobBuilder(Allocator.Temp);
-            try
-            {
-                ref var playerData = ref builder.ConstructRoot<PlayerData>();
-                playerData = new PlayerData();
-                ConvertPlayerData(ref builder, table, ref playerData);
-
-                return builder.CreateBlobAssetReference<PlayerData>(Allocator.Persistent);
-            }
-            finally
-            {
-                builder.Dispose();
-            }
-        }
-
-        private static void ConvertPlayerData(ref BlobBuilder builder, PlayerDataRaw data, ref PlayerData player)
-        {
-            player.ID = data.ID;
-            builder.AllocateString(ref player.Name, data.Name.ToString());
-            player.HP = data.HP;
-            var skills = builder.Allocate(ref player.Skills, data.Skills.Length);
-            for (int i = 0; i < skills.Length; i++)
-            {
-                skills[i] = data.Skills[i];
-            }
-        }
-
-        private static BlobAssetReference<MobDataPool> LoadMobTable()
-        {
-            var asset = Resources.Load<TextAsset>(MobTablePath);
-            var table = DataTableDeserializer.Deserialize<List<MobDataRaw>>(asset.text);
-            var builder = new BlobBuilder(Allocator.Temp);
-            try
-            {
-                ref var pool = ref builder.ConstructRoot<MobDataPool>();
-                var mobs = builder.Allocate(ref pool.Mobs, table.Count);
-                ConvertMobData(ref builder, table.ToArray(), ref mobs);
-
-                return builder.CreateBlobAssetReference<MobDataPool>(Allocator.Persistent);
-            }
-            finally
-            {
-                builder.Dispose();
-            }
-        }
-
-        private static void ConvertMobData(ref BlobBuilder builder, MobDataRaw[] datas, ref BlobBuilderArray<MobData> mobs)
-        {
-            Debug.Assert(datas.Length == mobs.Length);
-
-            for (int i = 0; i < datas.Length; i++)
-            {
-                var data = datas[i];
-                ref var mob = ref mobs[i];
-                mob.ID = data.ID;
-                builder.AllocateString(ref mob.Name, data.Name.ToString());
-                mob.HP = data.HP;
-                mob.Speed = data.Speed;
-                var skills = builder.Allocate(ref mob.Skills, data.Skills.Length);
-                for (int j = 0; j < skills.Length; j++)
+                // Skill은 다른 유형이므로 따로 처리한다.
+                var skillDataBuffer = AddBuffer<SkillDataBufferElement>(entity);
+                ImportTableToBuffer<SkillDataRaw, SkillData>(SkillTablePath, ref skillDataBuffer, ConvertSkillData);
+                using var skillMap = new NativeHashMap<int, BlobAssetReference<SkillData>>(skillDataBuffer.Length, Allocator.Temp);
+                foreach (var asset in skillDataBuffer)
                 {
-                    skills[j] = data.Skills[j];
+                    ref var data = ref asset.Data.Value;
+                    skillMap.Add(data.ID, asset.Data);
+                }
+
+                // Register Player Prefabs
+                var playerPrefabBuffer = AddBuffer<PlayerPrefabBufferElement>(entity);
+                foreach (var elem in entityDataList)
+                {
+                    ref var blobref = ref elem.Data.Value;
+                    if (blobref.EntityType != GameEntityType.Player)
+                    {
+                        continue;
+                    }
+                    var (prefab, animator) = GetEntityPrefab(blobref.Prefab.GetUTF8String());
+                    playerPrefabBuffer.Add(new PlayerPrefabBufferElement(blobref.ID, prefab, elem.Data, animator));
+                    var buffer = AddBuffer<SkillBufferElement>(prefab);
+                    foreach (var id in blobref.Skills.ToArray())
+                    {
+                        buffer.Add(new SkillBufferElement { Data = skillMap[id] });
+                    }
+                }
+
+                // Register Mob Prefabs
+                var mobPrefabBuffer = AddBuffer<MobPrefabBufferElement>(entity);
+                foreach (var elem in entityDataList)
+                {
+                    ref var blobref = ref elem.Data.Value;
+                    if (blobref.EntityType != GameEntityType.Mob)
+                    {
+                        continue;
+                    }
+                    var (prefab, animator) = GetEntityPrefab(blobref.Prefab.GetUTF8String());
+                    mobPrefabBuffer.Add(new MobPrefabBufferElement(blobref.ID, prefab, elem.Data, animator));
+                    var buffer = AddBuffer<SkillBufferElement>(prefab);
+                    foreach (var id in blobref.Skills.ToArray())
+                    {
+                        buffer.Add(new SkillBufferElement { Data = skillMap[id] });
+                    }
                 }
             }
-        }
 
-        private static BlobAssetReference<SkillDataPool> LoadSkilTable()
-        {
-            var asset = Resources.Load<TextAsset>(SkillTablePath);
-            var table = DataTableDeserializer.Deserialize<SkillDataRaw[]>(asset.text);
-            var builder = new BlobBuilder(Allocator.Temp);
-            try
+            private (Entity prefab, WeakObjectReference<Animator> animator) GetEntityPrefab(in string prefabData)
             {
-                ref var pool = ref builder.ConstructRoot<SkillDataPool>();
-                var skills = builder.Allocate(ref pool.Skills, table.Length);
-                ConvertSkillData(ref builder, table, ref skills);
-
-                return builder.CreateBlobAssetReference<SkillDataPool>(Allocator.Persistent);
+                var prefabLocation = $"Prefabs/{prefabData}";
+                var prefab = Resources.Load<GameObject>(prefabLocation);
+                if (!prefab)
+                {
+                    Debug.LogWarning("[GameDataAuthoring] Failed to load prefab: " + prefabLocation);
+                    return (Entity.Null, default);
+                }
+                var entityPrefab = GetEntity(prefab, TransformUsageFlags.Dynamic);
+                var animator = prefab.GetComponent<Animator>();
+                return (entityPrefab, animator ? new WeakObjectReference<Animator>(animator) : default);
             }
-            finally
+
+            // NOTE: 시간을 갈아넣어 만든 코드
+            private delegate void TableConverter<RawT, BlobT>(ref BlobBuilder builder, RawT source, ref BlobT dest)
+                where RawT : class
+                where BlobT : unmanaged, IBlobData;
+
+            private static void ImportTableToBuffer<RawT, BlobT>(string tablePath, ref DynamicBuffer<GameDataBufferElement<BlobT>> buffer, TableConverter<RawT, BlobT> converter)
+                where RawT : class
+                where BlobT : unmanaged, IBlobData
             {
-                builder.Dispose();
+                var asset = Resources.Load<TextAsset>(tablePath);
+                var table = DataTableDeserializer.Deserialize<RawT[]>(asset.text);
+
+                foreach (var item in table)
+                {
+                    var builder = new BlobBuilder(Allocator.Temp);
+                    try
+                    {
+                        ref var data = ref builder.ConstructRoot<BlobT>();
+                        converter(ref builder, item, ref data);
+                        var assetRef = builder.CreateBlobAssetReference<BlobT>(Allocator.Persistent);
+                        buffer.Add((GameDataBufferElement<BlobT>)assetRef);
+                    }
+                    finally
+                    {
+                        builder.Dispose();
+                    }
+                }
             }
-        }
 
-        private static void ConvertSkillData(ref BlobBuilder builder, SkillDataRaw[] datas, ref BlobBuilderArray<SkillData> skills)
-        {
-            Debug.Assert(datas.Length == skills.Length);
-
-            for (int i = 0; i < datas.Length; i++)
+            private static void ConvertGameEntityData(ref BlobBuilder builder, GameEntityDataRaw data, ref GameEntityData gameEntity)
             {
-                var data = datas[i];
-                ref var skill = ref skills[i];
+                gameEntity.EntityType = GameEntityType.None;
+                gameEntity.ID = data.ID;
+                gameEntity.Name.InitUTF8String(ref builder, data.Name);
+                gameEntity.Prefab.InitUTF8String(ref builder, data.Prefab);
+                gameEntity.HP = data.HP;
+                gameEntity.Speed = data.Speed;
+                gameEntity.Skills.Init(ref builder, data.Skills);
+            }
+
+            private static void ConvertPlayerData(ref BlobBuilder builder, GameEntityDataRaw data, ref GameEntityData player)
+            {
+                ConvertGameEntityData(ref builder, data, ref player);
+                player.EntityType = GameEntityType.Player;
+            }
+
+            private static void ConvertMobData(ref BlobBuilder builder, GameEntityDataRaw data, ref GameEntityData mob)
+            {
+                ConvertGameEntityData(ref builder, data, ref mob);
+                mob.EntityType = GameEntityType.Mob;
+            }
+
+            private static void ConvertSkillData(ref BlobBuilder builder, SkillDataRaw data, ref SkillData skill)
+            {
                 skill.ID = data.ID;
-                builder.AllocateString(ref skill.Name, data.Name.ToString());
-                builder.AllocateString(ref skill.Description, data.Description.ToString());
+                skill.Name.InitUTF8String(ref builder, data.Name);
+                skill.Description.InitUTF8String(ref builder, data.Description);
+                skill.Animation.InitUTF8String(ref builder, data.Animation);
                 skill.Cost = data.Cost;
+                skill.Delay = data.Delay;
                 skill.Cooldown = data.Cooldown;
                 skill.Damage = data.Damage;
                 skill.Range = data.Range;
@@ -179,16 +163,8 @@ namespace Sunshower
                 skill.HealAmount = data.HealAmount;
                 skill.SpeedDecreaseRate = data.SpeedDecreaseRate;
                 skill.SpeedDecreaseTime = data.SpeedDecreaseTime;
-                var spawnMobIDs = builder.Allocate(ref skill.SpawnMobIDs, data.SpawnMobIDs.Length);
-                for (int j = 0; j < spawnMobIDs.Length; j++)
-                {
-                    spawnMobIDs[j] = data.SpawnMobIDs[j];
-                }
-                var spawnMobCounts = builder.Allocate(ref skill.SpawnMobCounts, data.SpawnMobCounts.Length);
-                for (int j = 0; j < spawnMobCounts.Length; j++)
-                {
-                    spawnMobCounts[j] = data.SpawnMobCounts[j];
-                }
+                skill.SpawnMobIDs.Init(ref builder, data.SpawnMobIDs);
+                skill.SpawnMobCounts.Init(ref builder, data.SpawnMobCounts);
             }
         }
     }

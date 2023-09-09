@@ -13,5 +13,7 @@ namespace Sunshower
     {
         public StageState State;
         public float BeginDelay;
+
+        public bool IsBegin => State != StageState.Begin;
     }
 }

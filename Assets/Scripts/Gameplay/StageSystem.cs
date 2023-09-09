@@ -28,6 +28,12 @@ namespace Sunshower
                 if (_beginTimer < 0f)
                 {
                     stage.ValueRW.State = StageState.Running;
+
+                    var playerSpawnBuffer = SystemAPI.GetSingletonBuffer<PlayerSpawnBufferElement>();
+                    playerSpawnBuffer.Add(new PlayerSpawnBufferElement { PlayerID = 0 });
+
+                    var mobSpawnBuffer = SystemAPI.GetSingletonBuffer<MobSpawnBufferElement>();
+                    mobSpawnBuffer.Add(new MobSpawnBufferElement { MobID = 200, Type = MobType.Enemy });
                 }
                 return;
             }
