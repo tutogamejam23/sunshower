@@ -1,0 +1,133 @@
+# 1000~1999: 플레이어 스킬
+# 2000~2999: 몹 스킬
+# 3000~3999: 보스 스킬
+
+# ID: integer
+# Name: string
+# Description: string
+# Animation: string
+# Cost: integer
+# Delay: float
+# Cooldown: float
+# Damage: integer
+# Range: float
+# Duration: float
+# SpeedDecreaseRate: float
+# SpeedDecreaseTime: float
+# SpawnMobIDs: array<integer>
+# SpawnMobCounts: array<integer>
+
+- ID: 1000
+  Name: 여우콩
+  Description: |
+    여우콩 스킬 설명
+  Animation: Test
+  Cost: 15
+  Delay: 0.5
+  Duration: 5
+
+- ID: 1001
+  Name: 여우구슬
+  Description: "여우구슬 스킬 설명"
+  Animation: Test
+  Cost: 30
+  Delay: 0.5
+  Duration: 5
+
+- ID: 1002
+  Name: 캥!
+  Description: 캥! 스킬 설명
+  Animation: Test
+  Cost: 50
+  Delay: 0.5
+
+- ID: 1003
+  Name: 여우비
+  Description: 여우비 스킬 설명
+  Animation: Test
+  Cost: 30
+  Delay: 0.5
+  HealAmount: 10
+  SpeedDecreaseRate: 0.3
+  SpeedDecreaseTime: 5
+
+- ID: 2000
+  Name: 정찰병 일반 공격
+  Description: ""
+  Animation: Test
+  Damage: 10
+  Delay: 0.5
+  Cooldown: 1
+  Range: 2
+
+- ID: 2001
+  Name: 총잡이 일반 공격
+  Description: ""
+  Animation: Test
+  Damage: 30
+  Delay: 0.5
+  Cooldown: 0.8
+  Range: 10
+
+- ID: 2002
+  Name: 고라니 일반 공격
+  Description: ""
+  Animation: Test
+  Damage: 5
+  Delay: 0.5
+  Cooldown: 1
+  Range: 3
+
+- ID: 2003
+  Name: 호랑이 일반 공격
+  Description: ""
+  Animation: Test
+  Damage: 15
+  Delay: 0.5
+  Cooldown: 1.2
+  Range: 5
+
+- ID: 2004
+  Name: 소환요괴 일반 공격
+  Description: ""
+  Animation: Test
+  Damage: 30
+  Delay: 0.5
+  Cooldown: 1
+  Range: 4
+
+- ID: 3000
+  Name: 퇴마사 일반 공격
+  Description: ""
+  Animation: Test
+  Damage: 100
+  Range: 5
+  Delay: 0.5
+  Cooldown: 1.6
+
+- ID: 3001
+  Name: 멸 (滅)
+  Description: 멸 (滅) 스킬 설명
+  Animation: Test
+  Delay: 0.5
+  Cooldown: 15
+  Damage: 10
+  Range: 5
+
+- ID: 3002
+  Name: 현 (顯)
+  Description: 현 (顯) 스킬 설명
+  Animation: Test
+  Delay: 0.5
+  Cooldown: 15
+  SpawnMobIDs: [1, 2]
+  SpawnMobCounts: [3, 3]
+
+- ID: 3003
+  Name: 봉 (封)
+  Description: 봉 (封) 스킬 설명
+  Animation: Test
+  Delay: 0.5
+  Cooldown: 15
+  Damage: 100
+  Range: 5

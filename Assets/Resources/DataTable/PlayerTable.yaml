@@ -1,0 +1,5 @@
+- ID: 0
+  Name: 달 (䵣)
+  PrefabPath: Entity/Player
+  HP: 10000
+  Skills: [1000, 1001, 1002, 1003]
