@@ -122,19 +122,24 @@ namespace Sunshower
 
         public void Execute(Stage owner)
         {
-            // BUG: 적이 있는데 스테이지가 종료됨
-            if (_spawnQueue.Count <= 0 && owner.MobSpawner.ActiveEnemyMobCount == 0)
+            if (_spawnQueue.Count > 0)
+            {
+                _time += Time.deltaTime;
+                if (_time >= _spawnDelay)
+                {
+                    _time = 0f;
+                    owner.MobSpawner.Spawn(_spawnQueue.Dequeue(), MobType.Enemy);
+                }
+            }
+            else if (owner.MobSpawner.ActiveEnemyMobs.Count == 0)
             {
                 owner.ChangeState(owner.EndState);
                 return;
             }
 
-            _time += Time.deltaTime;
-            if (_time >= _spawnDelay)
+            if (owner.LogEnabled)
             {
-                _time = 0f;
-                var nextSpawnMobID = _spawnQueue.Dequeue();
-                owner.MobSpawner.Spawn(nextSpawnMobID, MobType.Enemy);
+                Debug.Log($"Frendly Mobs: {owner.MobSpawner.ActiveFriendlyMobs.Count}, Enemy Mobs: {owner.MobSpawner.ActiveEnemyMobs.Count}");
             }
         }
 
