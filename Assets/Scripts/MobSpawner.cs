@@ -10,24 +10,12 @@ namespace Sunshower
         [SerializeField] private Transform _friendlySpawnPoint;
         [SerializeField] private Transform _enemySpawnPoint;
 
-        public IEnumerable<Mob> ActiveMobs => _mobPool.Values.SelectMany(pool => pool.InactiveObjects);
-
-        /// <summary>
-        /// Linq를 이용하여 모든 활성화 몹 갯수를 반환합니다. 성능 이슈가 있을 수 있습니다.
-        /// </summary>
-        public int MobCount => _mobPool.Values.Sum(pool => pool.CountInactive);
-
-        /// <summary>
-        /// Linq를 이용하여 모든 활성화 아군 몹 갯수를 반환합니다. 성능 이슈가 있을 수 있습니다.
-        /// </summary>
-        public int ActiveFriendlyMobCount => _mobPool.Values.Sum(pool => pool.InactiveObjects.Count(mob => mob.MobType == MobType.Friendly));
-
-        /// <summary>
-        /// Linq를 이용하여 모든 활성화 적 몹 갯수를 반환합니다. 성능 이슈가 있을 수 있습니다.
-        /// </summary>
-        public int ActiveEnemyMobCount => _mobPool.Values.Sum(pool => pool.InactiveObjects.Count(mob => mob.MobType == MobType.Enemy));
+        public IReadOnlyCollection<Mob> ActiveFriendlyMobs => _activeFriendlyMobs;
+        public IReadOnlyCollection<Mob> ActiveEnemyMobs => _activeEnemyMobs;
 
         private readonly Dictionary<int, EntityPool<Mob>> _mobPool = new();
+        private readonly LinkedList<Mob> _activeFriendlyMobs = new();
+        private readonly LinkedList<Mob> _activeEnemyMobs = new();
 
         private void Start()
         {
@@ -36,7 +24,7 @@ namespace Sunshower
 
             foreach (var (id, mobData) in Stage.Instance.DataTable.MobTable)
             {
-                _mobPool.Add(id, new EntityPool<Mob>(mobData));
+                _mobPool.Add(id, new EntityPool<Mob>(mobData, onRelease: OnReleaseFromPool));
             }
         }
 
@@ -51,6 +39,33 @@ namespace Sunshower
                 _ => throw new System.NotImplementedException()
             };
             mob.Direction = transform.localScale = mobType == MobType.Friendly ? Vector3.right : Vector3.left;
+
+            switch (mob.MobType)
+            {
+                case MobType.Friendly:
+                    _activeFriendlyMobs.AddLast(mob);
+                    break;
+                case MobType.Enemy:
+                    _activeEnemyMobs.AddLast(mob);
+                    break;
+                default:
+                    throw new System.NotImplementedException();
+            }
+        }
+
+        public void OnReleaseFromPool(Mob mob)
+        {
+            switch (mob.MobType)
+            {
+                case MobType.Friendly:
+                    _activeFriendlyMobs.Remove(mob);
+                    break;
+                case MobType.Enemy:
+                    _activeEnemyMobs.Remove(mob);
+                    break;
+                default:
+                    throw new System.NotImplementedException();
+            }
         }
     }
 }

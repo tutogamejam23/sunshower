@@ -17,6 +17,8 @@ namespace Sunshower
 
     public class StateMachine<T> : MonoBehaviour where T : MonoBehaviour
     {
+        public bool LogEnabled = false;
+
         public IState<T> CurrentState { get; private set; }
         public IState<T> PreviousState { get; private set; }
 
@@ -31,6 +33,10 @@ namespace Sunshower
             CurrentState?.Exit(this as T);
             PreviousState = CurrentState;
             CurrentState = newState;
+            if (LogEnabled)
+            {
+                Debug.Log($"{Time.time}: State 변경: " + CurrentState.GetType().Name);
+            }
             CurrentState.Enter(this as T);
         }
 

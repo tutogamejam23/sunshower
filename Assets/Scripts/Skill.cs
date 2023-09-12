@@ -11,8 +11,8 @@ namespace Sunshower
     {
         public IGameEntity Owner { get; }
         public SkillData Data { get; }
-        public float Cooldown { get => cooldown; set => cooldown = math.min(value, 0f); }
-        public float DelayTime { get => delayTime; set => delayTime = math.min(value, 0f); }
+        public float Cooldown { get => cooldown; set => cooldown = math.max(value, 0f); }
+        public float DelayTime { get => delayTime; set => delayTime = math.max(value, 0f); }
 
         private float cooldown;
         private float delayTime;
@@ -98,6 +98,7 @@ namespace Sunshower
 
             Cooldown = Data.Cooldown;
             DelayTime = Data.Delay;
+            // Debug.Log($"{Owner.ID}가 {Data.Name} 스킬을 사용했습니다. Cooldown: {Cooldown}, Delay: {DelayTime}");
             return true;
         }
 
@@ -137,7 +138,7 @@ namespace Sunshower
                 for (int i = 0; i < hitCount; i++)
                 {
                     var hit = hits[i];
-                    if (hit.collider.TryGetComponent(out IGameEntity entity))
+                    if (hit.transform != target.Transform && hit.collider.TryGetComponent(out IGameEntity entity))
                     {
                         nearestEntity[entityCount++] = entity;
                     }
@@ -150,49 +151,5 @@ namespace Sunshower
                 ArrayPool<RaycastHit2D>.Shared.Return(hits);
             }
         }
-
-        // private static TargetEntity GetNearestEntity(float3 position, float direction, float range)
-        // {
-        //     var player = Stage.Instance.ActivePlayer;
-        //     var mobs = Stage.Instance.MobSpawner.ActiveMobs;
-
-        //     var entities = new NativeList<TargetEntity>(100, Allocator.TempJob)
-        //     {
-        //         new() {
-        //             ID = player.Data.ID,
-        //             Position = player.transform.position
-        //         }
-        //     };
-        //     foreach (var mob in mobs)
-        //     {
-        //         entities.Add(new TargetEntity
-        //         {
-        //             ID = mob.Data.ID,
-        //             Position = mob.transform.position
-        //         });
-        //     }
-
-        //     // Job?
-        //     TargetEntity nearestEntity = TargetEntity.Null;
-        //     float nearestDistance = float.MaxValue;
-
-        //     for (int i = 0; i < entities.Length; i++)
-        //     {
-        //         ref var target = ref entities.ElementAt(i);
-        //         var predicate = (target.Position.x - position.x) * direction;
-        //         if (predicate < 0f || predicate > range)
-        //         {
-        //             continue;
-        //         }
-        //         var distance = math.distance(target.Position, position);
-        //         if (distance < nearestDistance)
-        //         {
-        //             nearestEntity = target;
-        //             nearestDistance = distance;
-        //         }
-        //     }
-
-        //     return nearestEntity;
-        // }
     }
 }

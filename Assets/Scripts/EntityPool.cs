@@ -15,15 +15,19 @@ namespace Sunshower
 
         public GameEntityData Data => _data;
         public int CountInactive => _pool.CountInactive;
-        public IReadOnlyCollection<T> InactiveObjects => _inactiveObjects;
 
-        private readonly LinkedList<T> _inactiveObjects;
+        private readonly OnGetEntity _onGet;
+        private readonly OnReleaseEntity _onRelease;
 
-        public EntityPool(GameEntityData data)
+        public delegate void OnGetEntity(T entity);
+        public delegate void OnReleaseEntity(T entity);
+
+        public EntityPool(GameEntityData data, OnGetEntity onGet = null, OnReleaseEntity onRelease = null)
         {
             _pool = new ObjectPool<T>(CreateInstance, OnGetFromPool, OnRealseToPool, OnDestroyPooledObject);
             _data = data;
-            _inactiveObjects = new LinkedList<T>();
+            _onGet = onGet;
+            _onRelease = onRelease;
         }
 
         public void Clear()
@@ -61,14 +65,14 @@ namespace Sunshower
 
         private void OnRealseToPool(T pooledObject)
         {
-            _inactiveObjects.AddLast(pooledObject);
             pooledObject.gameObject.SetActive(false);
+            _onRelease?.Invoke(pooledObject);
         }
 
         private void OnGetFromPool(T pooledObject)
         {
-            _inactiveObjects.Remove(pooledObject);
             pooledObject.gameObject.SetActive(true);
+            _onGet?.Invoke(pooledObject);
         }
 
         private void OnDestroyPooledObject(T pooledObject)
