@@ -1,6 +1,6 @@
 using System.Buffers;
 using System.Linq;
-
+using System.Text;
 using Unity.Mathematics;
 
 using UnityEngine;
@@ -44,7 +44,7 @@ namespace Sunshower
                 }
 
                 // TODO: 여기다 텍스쳐 깜빡이는 효과 넣기
-                _hp = math.min(value, 0);
+                _hp = math.max(value, 0);
                 if (_hp == 0)
                 {
                     ChangeState(MobDeadState);
@@ -91,9 +91,11 @@ namespace Sunshower
         {
         }
 
+        StringBuilder builder = new StringBuilder();
+
         public void Execute(Mob owner)
         {
-            var range = 0f;
+            var range = -1f;
             foreach (var skill in owner.SkillManager.SkillMap.Values)
             {
                 if (skill.Cooldown <= 0f && skill.Data.Range > 0f && skill.Data.Range > range)
@@ -102,6 +104,7 @@ namespace Sunshower
                 }
             }
 
+
             // 가지고 있는 스킬 중 가장 공격범위가 먼 스킬을 기준으로 공격범위 내에 공격 대상이 있는지 확인
             var nearestEnties = ArrayPool<IGameEntity>.Shared.Rent(30);
             try
@@ -109,6 +112,17 @@ namespace Sunshower
                 var nearestCount = Skill.GetNearestEntity(owner, range, ref nearestEnties);
                 if (nearestCount > 0)
                 {
+                    if (owner.LogEnabled)
+                    {
+                        builder.Clear();
+                        builder.Append(Time.time).Append(": ");
+                        for (int i = 0; i < nearestCount; i++)
+                        {
+                            builder.Append(nearestEnties[i].ID).Append(", ");
+                        }
+                        Debug.Log(builder.ToString());
+                    }
+
                     for (int i = 0; i < nearestCount; i++)
                     {
                         var entity = nearestEnties[i];
@@ -130,6 +144,10 @@ namespace Sunshower
                 // Rent 했으면 무조건 Return해줘야 Memory Leak이 안생김
                 ArrayPool<IGameEntity>.Shared.Return(nearestEnties);
             }
+            if (range < 0f)
+            {
+                return;
+            }
 
             owner.transform.position += 0.1f * owner.Data.Speed * Time.deltaTime * owner.Direction;
         }
@@ -141,34 +159,37 @@ namespace Sunshower
 
     public class MobAttackState : IState<Mob>
     {
+        private Skill _usedSkill;
+
         public void Initialize()
         {
         }
 
         public void Enter(Mob owner)
         {
-            var used = false;
+            _usedSkill = null;
             foreach (var skill in owner.SkillManager.SkillMap.Values)
             {
                 if (skill.Use())
                 {
-                    // BUG: 적이 스킬을 쿨타임 상관없이 계속 씀
-                    Debug.Log($"{owner.Data.Name} ATTACK!");
-                    used = true;
+                    _usedSkill = skill;
                     break;
                 }
             }
-            if (used)
+            if (_usedSkill is null)
             {
-                // 사용할 수 있는 스킬이 없으면 다시 이동 상태로 변경
-
+                // 사용할 수 있는 스킬이 없으면 다시 MoveState로 변경
+                owner.ChangeState(owner.MobMoveState);
             }
         }
 
         public void Execute(Mob owner)
         {
-            // 애니메이션 추가 시 변경 가능성
-            owner.ChangeState(owner.MobMoveState);
+            if (_usedSkill.DelayTime <= 0f)
+            {
+                // 딜레이가 끝나면 다시 MoveState로 변경
+                owner.ChangeState(owner.MobMoveState);
+            }
         }
 
         public void Exit(Mob owner)
