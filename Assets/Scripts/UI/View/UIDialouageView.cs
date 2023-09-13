@@ -22,7 +22,8 @@ public class UIDialouageView : UIView
     {
         base.Start();
 
-        SceneManager.LoadSceneAsync("UIScene");
+        SceneManager.LoadScene("UIScene");
+        SceneManager.LoadScene("LobbyScene", LoadSceneMode.Additive);
     }
 
     public override void HidePanel()

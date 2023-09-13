@@ -21,8 +21,6 @@ public class UILobbyView : UIView
     protected override void Start()
     {
         base.Start();
-
-        SceneManager.LoadSceneAsync("LobbyScene", LoadSceneMode.Additive);
     }
 
     public override void HidePanel()
