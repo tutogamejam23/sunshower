@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -11,6 +12,18 @@ public class UILobbyView : UIView
     [SerializeField] private Button settingBtn;
     [SerializeField] private Image hpImg;
     [SerializeField] private Image processValueImg;
+
+    private void Awake()
+    {
+        UIManager.Instance.RegisterPanel(PanelType.Lobby, this);
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        SceneManager.LoadSceneAsync("LobbyScene", LoadSceneMode.Additive);
+    }
 
     public override void HidePanel()
     {

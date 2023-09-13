@@ -8,5 +8,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Stage1Scene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/LobbyScene.unity
+    guid: 6bb2d0c16230aa04f8c6800cd1aead02
+  - enabled: 1
+    path: Assets/Scenes/TitleScene.unity
+    guid: 01152685b7acac641886f2c711af0b0d
+  - enabled: 1
+    path: Assets/Scenes/UIScene.unity
+    guid: bc188c828ad717b44986443e30549101
+  - enabled: 1
+    path: Assets/Scenes/DialougeScene.unity
+    guid: 125ed6dca7f31b34d8865b569fa163c0
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
