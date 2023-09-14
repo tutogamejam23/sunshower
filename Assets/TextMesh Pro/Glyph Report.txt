@@ -1,0 +1,13 @@
+Font: Inter  Style: Regular
+Point Size: 55   SP/PD Ratio: 9.1%
+
+Characters included: 54/99
+Missing characters: 1
+Excluded characters: 0
+
+Characters missing from font file:
+----------------------------------------
+ID: 8203	Hex: 200B	Char [​]
+
+Characters excluded from packing:
+----------------------------------------

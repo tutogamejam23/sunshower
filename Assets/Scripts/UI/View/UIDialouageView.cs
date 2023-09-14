@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Dialouage View에 관리를 담당합니다.
@@ -10,15 +11,27 @@ public class UIDialouageView : UIView
 {
     [SerializeField] private TextMeshProUGUI ContentTxt;
     [SerializeField] private float typingSpeed;
+    [SerializeField] private string printContent; //#출력할 내용
+
+    private void Awake()
+    {
+        UIManager.Instance.RegisterPanel(PanelType.Dialouage, this);
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        SceneManager.LoadScene("UIScene");
+        SceneManager.LoadScene("LobbyScene", LoadSceneMode.Additive);
+    }
 
     public override void HidePanel()
     {
-        throw new System.NotImplementedException();
     }
 
     public override void ShowPanel()
     {
-        throw new System.NotImplementedException();
     }
 
 

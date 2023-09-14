@@ -326,7 +326,7 @@ GameObject:
   - component: {fileID: 1012132733}
   - component: {fileID: 1012132732}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ContentTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -371,7 +371,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: adasdasdasd
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -462,7 +462,7 @@ GameObject:
   - component: {fileID: 1372703246}
   - component: {fileID: 1372703247}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: DialoguePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -538,6 +538,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17a6103c6ed5428479267a1a2005c841, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ContentTxt: {fileID: 1012132732}
+  typingSpeed: 0
 --- !u!225 &1372703247
 CanvasGroup:
   m_ObjectHideFlags: 0

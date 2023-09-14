@@ -1,6 +1,9 @@
+using DG.Tweening;
+using Spine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -11,6 +14,24 @@ public class UITitleView : UIView
     [SerializeField] private Button gameStartBtn;
     [SerializeField] private Button continuingBtn;
     [SerializeField] private Button exitBtn;
+
+    [SerializeField] private Image fadeImg;
+
+    void Awake()
+    {
+        UIManager.Instance.RegisterPanel(PanelType.Title, this);
+
+        gameStartBtn.onClick.AddListener(() => StartBtn());
+    }
+
+    void StartBtn()
+    {
+        fadeImg.DOFade(1f, 0.5f).OnComplete(() =>
+        {
+            SceneManager.LoadSceneAsync("DialougeScene");
+        });
+
+    }
 
     public override void HidePanel()
     {
