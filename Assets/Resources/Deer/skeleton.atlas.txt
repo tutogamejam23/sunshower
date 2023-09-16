@@ -1,0 +1,40 @@
+skeleton.png
+	size: 481, 216
+	filter: Linear, Linear
+	pma: true
+	scale: 0.5
+body
+	bounds: 2, 2, 233, 212
+	offsets: 17, 134, 255, 358
+leg1
+	bounds: 237, 81, 75, 133
+	offsets: 16, 79, 255, 358
+leg2
+	bounds: 314, 116, 62, 98
+	offsets: 47, 85, 255, 358
+leg22
+	bounds: 349, 6, 55, 83
+	offsets: 56, 24, 255, 358
+leg3
+	bounds: 237, 17, 62, 110
+	offsets: 133, 94, 255, 358
+	rotate: 90
+leg33
+	bounds: 314, 91, 23, 98
+	offsets: 170, 17, 255, 358
+	rotate: 90
+leg4
+	bounds: 406, 12, 59, 54
+	offsets: 170, 129, 255, 358
+	rotate: 90
+leg44
+	bounds: 414, 73, 59, 83
+	offsets: 170, 64, 255, 358
+tail
+	bounds: 378, 116, 40, 29
+	offsets: 9, 186, 255, 358
+	rotate: 90
+수정다리
+	bounds: 378, 158, 56, 101
+	offsets: 23, 17, 255, 358
+	rotate: 90

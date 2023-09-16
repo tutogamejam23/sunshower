@@ -27,11 +27,11 @@ namespace Sunshower
     public class Player : StateMachine<Player>, IGameEntity, ICostEntity
     {
         [SerializeField] private SkillManager _skillManager;
+        public ISkill<Player> Skill { get; set; } = null;
 
         public PlayerIdleState PlayerIdleState { get; private set; }
         public PlayerAttackState PlayerAttackState { get; private set; }
         public PlayerDeadState PlayerDeadState { get; private set; }
-
 
         public SkillManager SkillManager => _skillManager;
         public GameEntityData Data { get; private set; }

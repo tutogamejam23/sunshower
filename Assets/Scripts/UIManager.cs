@@ -13,7 +13,8 @@ public enum PanelType
     Lobby,
     Stage1,
     Stage2,
-    Setting
+    Setting,
+    Skill,
 }
 
 /// <summary>

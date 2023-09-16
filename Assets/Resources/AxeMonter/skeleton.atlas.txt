@@ -1,0 +1,52 @@
+skeleton.png
+	size: 986, 139
+	filter: Linear, Linear
+	pma: true
+	scale: 0.5
+skin1/arm1
+	bounds: 794, 14, 68, 48
+	offsets: 136, 130, 400, 400
+skin1/arm2
+	bounds: 951, 71, 33, 66
+	offsets: 208, 106, 400, 400
+skin1/ax
+	bounds: 404, 61, 193, 76
+	offsets: 127, 146, 400, 400
+skin1/body
+	bounds: 794, 64, 73, 80
+	offsets: 168, 93, 400, 400
+	rotate: 90
+skin1/head
+	bounds: 2, 2, 199, 135
+	offsets: 113, 165, 400, 400
+skin1/leg1
+	bounds: 580, 4, 55, 90
+	offsets: 152, 22, 400, 400
+	rotate: 90
+skin1/leg2
+	bounds: 404, 3, 56, 86
+	offsets: 191, 25, 400, 400
+	rotate: 90
+skin2/arm1
+	bounds: 864, 7, 68, 48
+	offsets: 136, 130, 400, 400
+skin2/arm2
+	bounds: 951, 3, 33, 66
+	offsets: 208, 106, 400, 400
+skin2/ax
+	bounds: 599, 61, 193, 76
+	offsets: 127, 146, 400, 400
+skin2/body
+	bounds: 876, 57, 73, 80
+	offsets: 168, 93, 400, 400
+skin2/head
+	bounds: 203, 2, 199, 135
+	offsets: 113, 165, 400, 400
+skin2/leg1
+	bounds: 672, 4, 55, 90
+	offsets: 152, 22, 400, 400
+	rotate: 90
+skin2/leg2
+	bounds: 492, 3, 56, 86
+	offsets: 191, 25, 400, 400
+	rotate: 90
