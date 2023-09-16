@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Sunshower
 {
-    public class KangSkill : MonoBehaviour, ISkill<Player>
+    public class GunShot : MonoBehaviour
     {
         float cooldown = 0;
         int cost = 0;
@@ -19,9 +19,9 @@ namespace Sunshower
             return cost;
         }
 
-        public void Use(Player owener)
+        public void Use(Mob owener)
         {
-            Debug.Log("KangSkill 실행");
+            Debug.Log("GunShot");
         }
     }
 }

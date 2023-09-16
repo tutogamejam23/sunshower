@@ -1,5 +1,5 @@
 Font: Inter  Style: Regular
-Point Size: 55   SP/PD Ratio: 9.1%
+Point Size: 54   SP/PD Ratio: 9.3%
 
 Characters included: 54/99
 Missing characters: 1

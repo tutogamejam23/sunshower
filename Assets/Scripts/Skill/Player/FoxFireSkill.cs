@@ -6,7 +6,18 @@ namespace Sunshower
 {
     public class FoxFireSkill : MonoBehaviour, ISkill<Player>
     {
-        [SerializeField] float speed = 3;
+        float cooldown = 0;
+        int cost = 0;
+
+        public float GetCooldown()
+        {
+            return cooldown;
+        }
+
+        public int GetCost()
+        {
+            return cost;
+        }
 
         public void Use(Player owener)
         {
