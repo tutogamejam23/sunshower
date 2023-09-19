@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/TitleScene.unity
     guid: 01152685b7acac641886f2c711af0b0d
   - enabled: 1
-    path: Assets/Scenes/UIScene.unity
+    path: Assets/Scenes/StageUIScene.unity
     guid: bc188c828ad717b44986443e30549101
   - enabled: 1
     path: Assets/Scenes/DialougeScene.unity

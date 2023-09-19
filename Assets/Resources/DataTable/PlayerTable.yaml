@@ -2,4 +2,5 @@
   Name: 달 (䵣)
   PrefabPath: Entity/Player
   HP: 10000
+  CostUpTime: 1
   Skills: [1000, 1001, 1002, 1003]

@@ -28,24 +28,23 @@ namespace Sunshower
             }
         }
 
-        public void Spawn(int mobID, MobType mobType)
+        public void Spawn(int mobID, EntitySideType side)
         {
             var mob = _mobPool[mobID].Get();
-            mob.MobType = mobType;
-            mob.transform.position = mobType switch
+            mob.transform.position = side switch
             {
-                MobType.Friendly => _friendlySpawnPoint.position,
-                MobType.Enemy => _enemySpawnPoint.position,
+                EntitySideType.Friendly => _friendlySpawnPoint.position,
+                EntitySideType.Enemy => _enemySpawnPoint.position,
                 _ => throw new System.NotImplementedException()
             };
-            mob.Direction = transform.localScale = mobType == MobType.Friendly ? Vector3.right : Vector3.left;
-
-            switch (mob.MobType)
+            mob.Direction = transform.localScale = side == EntitySideType.Friendly ? Vector3.right : Vector3.left;
+            mob.EntitySide = side;
+            switch (side)
             {
-                case MobType.Friendly:
+                case EntitySideType.Friendly:
                     _activeFriendlyMobs.AddLast(mob);
                     break;
-                case MobType.Enemy:
+                case EntitySideType.Enemy:
                     _activeEnemyMobs.AddLast(mob);
                     break;
                 default:
@@ -55,12 +54,12 @@ namespace Sunshower
 
         public void OnReleaseFromPool(Mob mob)
         {
-            switch (mob.MobType)
+            switch (mob.EntitySide)
             {
-                case MobType.Friendly:
+                case EntitySideType.Friendly:
                     _activeFriendlyMobs.Remove(mob);
                     break;
-                case MobType.Enemy:
+                case EntitySideType.Enemy:
                     _activeEnemyMobs.Remove(mob);
                     break;
                 default:

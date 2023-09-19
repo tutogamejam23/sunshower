@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Sunshower
@@ -7,6 +8,8 @@ namespace Sunshower
         [SerializeField] private Transform _spawnPoint;
 
         public Player ActivePlayer { get; private set; }
+
+        public event EventHandler<Player> OnPlayerSpawned;
 
         private void Start()
         {
@@ -27,7 +30,9 @@ namespace Sunshower
             player.transform.position = _spawnPoint.position;
             player.Initialize(data);
             ActivePlayer = player;
+            player.HP = data.HP;
             player.Direction = Vector3.right;
+            OnPlayerSpawned?.Invoke(this, player);
         }
     }
 }

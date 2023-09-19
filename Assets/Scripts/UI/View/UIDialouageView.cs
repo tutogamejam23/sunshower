@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,7 +15,7 @@ public class UIDialouageView : UIView
     [SerializeField] private string[] printContent; //#출력할 내용
 
     private int currentIndex = 0; // 현재 출력 중인 문자열의 인덱스
-    private string currentText = ""; // 현재까지 타이핑된 텍스트
+    private readonly StringBuilder currentText = new(); // 현재까지 타이핑된 텍스트
 
     private void Awake()
     {
@@ -42,8 +43,8 @@ public class UIDialouageView : UIView
         // 배열에서 문자열을 한 글자씩 출력
         for (int i = 0; i < printContent[currentIndex].Length; i++)
         {
-            currentText += printContent[currentIndex][i];
-            ContentTxt.text = currentText;
+            currentText.Append(printContent[currentIndex][i]);
+            ContentTxt.text = currentText.ToString();
             yield return new WaitForSeconds(typingSpeed);
         }
 
@@ -59,8 +60,7 @@ public class UIDialouageView : UIView
         else
         {
             // 모든 문자열을 출력한 후에 실행할 작업을 수행 (예: 다음 장면으로 전환)
-            SceneManager.LoadScene("UIScene");
-            SceneManager.LoadScene("Stage1Scene", LoadSceneMode.Additive);
+            SceneManager.LoadScene("Stage1Scene", LoadSceneMode.Single);
         }
     }
 }
