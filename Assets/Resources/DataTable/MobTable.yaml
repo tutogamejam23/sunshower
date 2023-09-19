@@ -21,14 +21,6 @@
   Range: 3
   Skills: [2003]
 
-- ID: 102
-  Name: 소환요괴
-  PrefabPath: Entity/Ghost
-  HP: 30
-  Speed: 15
-  Range: 5
-  Skills: [2004]
-
 - ID: 200
   Name: 정찰병
   PrefabPath: Entity/Scout

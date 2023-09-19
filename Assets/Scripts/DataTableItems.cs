@@ -22,6 +22,7 @@ namespace Sunshower
 
     public class PlayerData : GameEntityData
     {
+        public int MaxCost { get; set; }
         public float CostUpTime { get; set; }
     }
 

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +15,9 @@ namespace Sunshower
         [SerializeField] private Button yeougusul;
         [SerializeField] private Button kaeng;
         [SerializeField] private Button yeoubi;
+        [SerializeField] private Image costImage;
+        [SerializeField] private List<Sprite> costDiffTextures;
+        [SerializeField] private TMP_Text costText;
 
         private static readonly int YeobulID = 1000;
         private static readonly int YeougusulID = 1001;
@@ -22,6 +27,8 @@ namespace Sunshower
         private readonly Dictionary<int, Skill> _skills = new();
 
         private bool _targetingGround;
+        private Tween _costChangedTween;
+        private float _costDivide;
 
         private void Awake()
         {
@@ -35,6 +42,9 @@ namespace Sunshower
         protected override void Start()
         {
             base.Start();
+
+            costImage.sprite = costDiffTextures[0];
+            costText.text = "0";
         }
 
         private void Update()
@@ -92,17 +102,33 @@ namespace Sunshower
             yeoubi.enabled = !_targetingGround;
         }
 
-        private void OnPlayerSpawned(object sender, Player e)
+        private void OnPlayerSpawned(object sender, Player spawnedPlayer)
         {
-            foreach (var skill in e.SkillManager.Skills)
+            var data = spawnedPlayer.Info as PlayerData;
+
+            foreach (var skill in spawnedPlayer.SkillManager.Skills)
             {
                 _skills.Add(skill.Info.ID, skill);
             }
 
-            // yeoubul.onClick.AddListener(() => Yeoubul());
-            // yeougusul.onClick.AddListener(() => Yeougusul());
-            // kaeng.onClick.AddListener(() => Kaeng());
-            // yeoubi.onClick.AddListener(() => Yeoubi());
+            _costDivide = (float)data.MaxCost / costDiffTextures.Count;
+            spawnedPlayer.OnCostChanged += OnPlayerCostChanged;
+        }
+
+        private void OnPlayerCostChanged(object sender, int changedCost)
+        {
+            var player = Stage.Instance.ActivePlayer;
+            var data = player.Info as PlayerData;
+
+            costText.text = changedCost.ToString();
+            if (_costChangedTween != null && _costChangedTween.IsPlaying())
+            {
+                _costChangedTween.Complete();
+            }
+            _costChangedTween = costText.rectTransform.DOPunchScale(0.2f * Vector3.up, 0.3f);
+
+            var index = math.max((int)math.floor(changedCost / _costDivide) - 1, 0);
+            costImage.sprite = costDiffTextures[index];
         }
 
         public void Yeoubul()
