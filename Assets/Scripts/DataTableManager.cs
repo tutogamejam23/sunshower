@@ -1,13 +1,64 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
 using UnityEngine;
 using YamlDotNet.Serialization;
 
 namespace Sunshower
 {
+    [Flags]
+    public enum GameEntityType
+    {
+        None = 0,
+        Player = 1,
+        Mob = 2,
+        Projectile = 3
+    }
+
+    public interface IDataTableItem
+    {
+        int ID { get; }
+    }
+
+    public class GameEntityData : IDataTableItem
+    {
+        public GameEntityType EntityType { get; set; }
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string PrefabPath { get; set; }
+        public int HP { get; set; }
+        public float Speed { get; set; }
+        public int[] Skills { get; set; }
+    }
+
+    public class SkillData : IDataTableItem
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Animation { get; set; }
+        public int Cost { get; set; }
+        public float Delay { get; set; }
+        public float Cooldown { get; set; }
+        public int Damage { get; set; }
+        public float Range { get; set; }
+        public float Duration { get; set; }
+        public int HealAmount { get; set; }
+        public float SpeedDecreaseRate { get; set; }
+        public float SpeedDecreaseTime { get; set; }
+        public int[] SpawnMobIDs { get; set; }
+        public int[] SpawnMobCounts { get; set; }
+    }
+
+    public class StageData : IDataTableItem
+    {
+        public int ID => StageNumber;
+        public int StageNumber { get; set; }
+        public int PlayerID { get; set; }
+        public float SpawnDelay { get; set; }
+        public int[] Spawner { get; set; }
+    }
+
     public class DataTableManager : MonoBehaviour
     {
         public static readonly string PlayerTablePath = "DataTable/PlayerTable";
@@ -15,39 +66,38 @@ namespace Sunshower
         public static readonly string SkillTablePath = "DataTable/SkillTable";
         public static readonly string StageTablePath = "DataTable/StageTable";
 
-        public IReadOnlyDictionary<int, PlayerData> PlayerTable => _playerTable;
-        public IReadOnlyDictionary<int, MobData> MobTable => _mobTable;
+        private static readonly IDeserializer DataTableDeserializer =
+            new DeserializerBuilder()
+            .Build();
+
+        public IReadOnlyDictionary<int, GameEntityData> PlayerTable => _playerTable;
+        public IReadOnlyDictionary<int, GameEntityData> MobTable => _mobTable;
         public IReadOnlyDictionary<int, SkillData> SkillTable => _skillTable;
         public IReadOnlyDictionary<int, StageData> StageTable => _stageTable;
 
-        private Dictionary<int, PlayerData> _playerTable;
-        private Dictionary<int, MobData> _mobTable;
+        private Dictionary<int, GameEntityData> _playerTable;
+        private Dictionary<int, GameEntityData> _mobTable;
         private Dictionary<int, SkillData> _skillTable;
         private Dictionary<int, StageData> _stageTable;
 
         private void Awake()
         {
-            _playerTable =
-                ImportDataTable<PlayerData[]>(PlayerTablePath, PlayerDataTableDeserializer.Deserializer)
-                .ToDictionary(data => data.ID);
-
-            _mobTable =
-                ImportDataTable<MobData[]>(MobTablePath, MobDataTableDeserializer.Deserializer)
-                .ToDictionary(data => data.ID);
-
-            _skillTable =
-                ImportDataTable<SkillData[]>(SkillTablePath, SkillDataTableDeserializer.Deserializer)
-                .ToDictionary(data => data.ID);
-
-            _stageTable =
-                ImportDataTable<StageData[]>(StageTablePath, StageDataTableDeserializer.Deserializer)
-                .ToDictionary(data => data.ID);
+            _playerTable = ImportDataTable<GameEntityData>(PlayerTablePath);
+            _mobTable = ImportDataTable<GameEntityData>(MobTablePath);
+            _skillTable = ImportDataTable<SkillData>(SkillTablePath);
+            _stageTable = ImportDataTable<StageData>(StageTablePath);
         }
 
-        private static T ImportDataTable<T>(in string path, IDeserializer deserializer)
+        private static Dictionary<int, T> ImportDataTable<T>(in string path) where T : IDataTableItem
         {
             var dataText = Resources.Load<TextAsset>(path);
-            return deserializer.Deserialize<T>(dataText.text);
+            var table = DataTableDeserializer.Deserialize<T[]>(dataText.text);
+            var map = new Dictionary<int, T>();
+            foreach (var data in table)
+            {
+                map.Add(data.ID, data);
+            }
+            return map;
         }
     }
 }

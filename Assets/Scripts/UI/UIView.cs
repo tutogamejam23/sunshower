@@ -27,7 +27,7 @@ public abstract class UIView : MonoBehaviour, UIObject
         CG.blocksRaycasts = isActive && blockRaycast;
     }
 
-    public bool IsActive()
+    public bool isActive()
     {
         return CG.alpha != 0;
     }

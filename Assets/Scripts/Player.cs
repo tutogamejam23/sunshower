@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 
 using Unity.Mathematics;
@@ -7,23 +6,39 @@ using UnityEngine;
 
 namespace Sunshower
 {
-    public class Player : StateMachine<Player>, IGameEntity, ICostEntity, ISkillEntity
+    public enum EntityType
     {
-        [field: SerializeField]
-        public SkillManager SkillManager { get; private set; }
+        Player, Mob
+    }
 
-        public Transform Transform => transform;
-        public Vector3 Direction { get; set; }
-        public int ID => Info.ID;
-        public EntitySideType EntitySide => EntitySideType.Friendly;
-        public GameEntityData Info { get; private set; }
+    public interface IGameEntity
+    {
+        public Transform Transform { get; }
+        public Vector3 Direction { get; }
+        public int ID { get; }
+        public int HP { get; set; }
+    }
+
+    public interface ICostEntity
+    {
+        public int Cost { get; set; }
+    }
+
+    public class Player : StateMachine<Player>, IGameEntity, ICostEntity
+    {
+        [SerializeField] private SkillManager _skillManager;
+        public ISkill<Player> Skill { get; set; } = null;
 
         public PlayerIdleState PlayerIdleState { get; private set; }
         public PlayerAttackState PlayerAttackState { get; private set; }
         public PlayerDeadState PlayerDeadState { get; private set; }
 
-        public event EventHandler<(int previous, int current)> OnHPChanged;
-        public event EventHandler<int> OnCostChanged;
+        public SkillManager SkillManager => _skillManager;
+        public GameEntityData Data { get; private set; }
+
+        public Transform Transform => transform;
+        public Vector3 Direction { get; set; }
+        public int ID => Data.ID;
 
         public int HP
         {
@@ -35,13 +50,7 @@ namespace Sunshower
                     // 이미 체력이 0이 되어 DeadState로 변경됐음
                     return;
                 }
-                var prevHP = _hp;
-                _hp = math.max(math.min(value, Info.HP), 0);
-                if (prevHP != _hp)
-                {
-                    OnHPChanged?.Invoke(this, (prevHP, _hp));
-                }
-
+                _hp = math.min(value, 0);
                 if (_hp == 0)
                 {
                     ChangeState(PlayerDeadState);
@@ -49,23 +58,14 @@ namespace Sunshower
             }
         }
 
-        public int Cost
-        {
-            get => _cost;
-            set
-            {
-                _cost = math.max(value, 0);
-                OnCostChanged?.Invoke(this, _cost);
-            }
-        }
+        public int Cost { get => _cost; set => _cost = math.min(value, 0); }
 
         private int _hp;
         private int _cost;
-        private float _costUpTime;
 
         private void Awake()
         {
-            Debug.Assert(SkillManager);
+            Debug.Assert(_skillManager, "SkillManager 컴포넌트가 연결되어 있지 않습니다!");
 
             PlayerIdleState = new PlayerIdleState();
             PlayerAttackState = new PlayerAttackState();
@@ -82,22 +82,10 @@ namespace Sunshower
             ChangeState(PlayerIdleState);
         }
 
-        protected override void Update()
-        {
-            base.Update();
-            _costUpTime += Time.deltaTime;
-            var playerInfo = Info as PlayerData;
-            if (_costUpTime >= playerInfo.CostUpTime)
-            {
-                _costUpTime = 0f;
-                Cost += 1;
-            }
-        }
-
         public void Initialize(GameEntityData data)
         {
-            Info = data;
-            SkillManager.Register(this, data.Skills);
+            Data = data;
+            SkillManager.Initialize(this, Data.Skills.Select(id => Stage.Instance.DataTable.SkillTable[id]));
         }
     }
 
@@ -152,7 +140,7 @@ namespace Sunshower
         public void Execute(Player owner)
         {
             // 죽는 애니메이션 끝날 때 까지 대기
-            UnityEngine.Object.Destroy(owner.gameObject);
+            Object.Destroy(owner.gameObject);
         }
 
         public void Exit(Player owner)
