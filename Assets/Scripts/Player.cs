@@ -54,8 +54,13 @@ namespace Sunshower
             get => _cost;
             set
             {
-                _cost = math.max(value, 0);
-                OnCostChanged?.Invoke(this, _cost);
+                var data = Info as PlayerData;
+                var nextCost = math.max(math.min(value, data.MaxCost), 0);
+                if (_cost != nextCost)
+                {
+                    _cost = nextCost;
+                    OnCostChanged?.Invoke(this, _cost);
+                }
             }
         }
 
