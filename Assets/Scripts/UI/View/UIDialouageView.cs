@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -21,13 +22,13 @@ public class UIDialouageView : UIView
 
         StartCoroutine(PlayVideo());
     }
-  
+
     IEnumerator PlayVideo()
     {
         yield return new WaitForSeconds(28f);
 
-        SceneManager.LoadScene("UIScene");
-        SceneManager.LoadScene("Stage1Scene", LoadSceneMode.Additive);
+        // SceneManager.LoadScene("UIScene");
+        SceneManager.LoadScene("Stage1Scene", LoadSceneMode.Single);
     }
 
     public override void HidePanel()

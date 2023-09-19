@@ -10,6 +10,7 @@
   PrefabPath: Entity/Gorani
   HP: 30
   Speed: 10
+  Range: 3
   Skills: [2002]
 
 - ID: 101
@@ -17,6 +18,7 @@
   PrefabPath: Entity/Tiger
   HP: 50
   Speed: 15
+  Range: 3
   Skills: [2003]
 
 - ID: 102
@@ -24,6 +26,7 @@
   PrefabPath: Entity/Ghost
   HP: 30
   Speed: 15
+  Range: 5
   Skills: [2004]
 
 - ID: 200
@@ -31,6 +34,7 @@
   PrefabPath: Entity/Scout
   HP: 100
   Speed: 15
+  Range: 3
   Skills: [2000]
 
 - ID: 201
@@ -38,6 +42,7 @@
   PrefabPath: Entity/Gunman
   HP: 200
   Speed: 10
+  Range: 10
   Skills: [2001]
 
 - ID: 202
@@ -45,4 +50,5 @@
   PrefabPath: Entity/Exorcist
   HP: 10000
   Speed: 7
-  Skills: [3000, 3001, 3002, 3003]
+  Range: 7
+  Skills: [3000, 3001, 3002]
