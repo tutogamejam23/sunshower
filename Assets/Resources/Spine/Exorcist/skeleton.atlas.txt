@@ -1,0 +1,38 @@
+skeleton.png
+	size: 486, 157
+	filter: Linear, Linear
+	pma: true
+	scale: 0.5
+1
+	bounds: 207, 9, 30, 48
+	offsets: 24, 126, 245, 302
+	rotate: 90
+2
+	bounds: 257, 7, 32, 34
+	offsets: 198, 230, 245, 302
+	rotate: 90
+3
+	bounds: 344, 30, 43, 52
+	offsets: 170, 135, 245, 302
+	rotate: 90
+arm1
+	bounds: 398, 7, 48, 70
+	offsets: 49, 83, 245, 302
+	rotate: 90
+arm2
+	bounds: 344, 75, 53, 80
+	offsets: 113, 73, 245, 302
+body
+	bounds: 207, 41, 135, 114
+	offsets: 41, 40, 245, 302
+head
+	bounds: 2, 2, 203, 153
+	offsets: 15, 144, 245, 302
+leg1
+	bounds: 399, 108, 47, 85
+	offsets: 60, 3, 245, 302
+	rotate: 90
+leg2
+	bounds: 399, 57, 49, 82
+	offsets: 105, 4, 245, 302
+	rotate: 90
