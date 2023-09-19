@@ -1,3 +1,4 @@
+using Spine.Unity;
 using UnityEngine;
 
 namespace Sunshower
@@ -10,6 +11,7 @@ namespace Sunshower
     public interface IGameEntity
     {
         public Transform Transform { get; }
+        public SkeletonAnimation Animation { get; }
         public Vector3 Direction { get; }
         public EntitySideType EntitySide { get; }
         public int ID { get; }

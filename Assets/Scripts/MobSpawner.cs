@@ -61,6 +61,7 @@ namespace Sunshower
                 default:
                     throw new System.NotImplementedException();
             }
+            mob.OnActive();
         }
 
         public void OnReleaseFromPool(Mob mob)

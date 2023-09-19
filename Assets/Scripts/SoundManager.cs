@@ -1,29 +1,35 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Xml.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
 namespace Sunshower
 {
     public class SoundManager : MonoBehaviour
     {
+        public AudioClipTable SFXTable;
+        public SFXPoolItem SFXPoolItem;
         public AudioMixer mixer;
         public AudioSource Bgm;
         public AudioClip[] BgmList;
 
         public static SoundManager instance;
 
+        private SFXPool _sfxPool;
+
         private void Awake()
         {
             if (instance == null)
             {
                 instance = this;
-                DontDestroyOnLoad(instance);
-                SceneManager.sceneLoaded += OnSceneLoaded;
+                Debug.Assert(SFXTable);
+                SFXTable.CreateTable();
             }
             else
             {
@@ -31,39 +37,40 @@ namespace Sunshower
             }
         }
 
-        private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+        private void Start()
         {
-            for (int i = 0; i < BgmList.Length; i++)
-            {
-                if (arg0.name == BgmList[i].name)
-                {
-                    PlayBGM(BgmList[i]);
-                }
+            Debug.Assert(SFXPoolItem);
+            _sfxPool = new SFXPool(SFXPoolItem);
+        }
 
+        private void OnDestroy()
+        {
+            if (instance == this)
+            {
+                instance = null;
             }
         }
 
-        public void PlaySFX(AudioClip clip)
+        public bool PlaySFX(string sfxName)
         {
-            GameObject go = new GameObject(nameof(clip));
-            AudioSource audiosource = go.AddComponent<AudioSource>();
-            audiosource.outputAudioMixerGroup = mixer.FindMatchingGroups("SFX")[0];
-            audiosource.clip = clip;
-            audiosource.Play();
-
-            Destroy(go, clip.length);
+            if (SFXTable.AudioClips.TryGetValue(sfxName, out var clip))
+            {
+                return false;
+            }
+            var sfx = _sfxPool.Get();
+            sfx.Play(clip);
+            return true;
         }
 
-        public void PlayBGM(AudioClip clip)
+        public bool PlaySFXAtPosition(string sfxName, Vector3 position)
         {
-            Bgm.outputAudioMixerGroup = mixer.FindMatchingGroups("SFX")[0];
-            Bgm.clip = clip;
-            Bgm.loop = true;
-            Bgm.volume = 0.1f;
-            Bgm.Play();
+            if (!SFXTable.AudioClips.TryGetValue(sfxName, out var clip))
+            {
+                return false;
+            }
+            var sfx = _sfxPool.Get();
+            sfx.PlayAtPosition(clip, position);
+            return true;
         }
-
-        public void StopBGM() => Bgm.Stop();
-
     }
 }

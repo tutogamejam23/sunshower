@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
-
+using Spine;
+using Spine.Unity;
 using Unity.Mathematics;
 
 using UnityEngine;
@@ -12,14 +13,18 @@ namespace Sunshower
         [field: SerializeField]
         public SkillManager SkillManager { get; private set; }
 
+        [field: SerializeField]
+        public SkeletonAnimation Animation { get; private set; }
+
         public Transform Transform => transform;
         public Vector3 Direction { get; set; }
-        public int ID => Info.ID;
+        public int ID => Data.ID;
         public EntitySideType EntitySide => EntitySideType.Friendly;
-        public GameEntityData Info { get; private set; }
+        public GameEntityData Data { get; private set; }
+        public PlayerData PlayerData => Data as PlayerData;
 
         public PlayerIdleState PlayerIdleState { get; private set; }
-        public PlayerAttackState PlayerAttackState { get; private set; }
+        public PlayerSkillState PlayerSkillState { get; private set; }
         public PlayerDeadState PlayerDeadState { get; private set; }
 
         public event EventHandler<(int previous, int current)> OnHPChanged;
@@ -36,7 +41,7 @@ namespace Sunshower
                     return;
                 }
                 var prevHP = _hp;
-                _hp = math.max(math.min(value, Info.HP), 0);
+                _hp = math.max(math.min(value, Data.HP), 0);
                 if (prevHP != _hp)
                 {
                     OnHPChanged?.Invoke(this, (prevHP, _hp));
@@ -54,7 +59,7 @@ namespace Sunshower
             get => _cost;
             set
             {
-                var data = Info as PlayerData;
+                var data = Data as PlayerData;
                 var nextCost = math.max(math.min(value, data.MaxCost), 0);
                 if (_cost != nextCost)
                 {
@@ -71,9 +76,10 @@ namespace Sunshower
         private void Awake()
         {
             Debug.Assert(SkillManager);
+            Debug.Assert(Animation);
 
             PlayerIdleState = new PlayerIdleState();
-            PlayerAttackState = new PlayerAttackState();
+            PlayerSkillState = new PlayerSkillState();
             PlayerDeadState = new PlayerDeadState();
         }
 
@@ -81,17 +87,15 @@ namespace Sunshower
         {
             // Player는 풀링을 안할거라 Start에서 초기화해도 되긴 함
             PlayerIdleState.Initialize();
-            PlayerAttackState.Initialize();
+            PlayerSkillState.Initialize();
             PlayerDeadState.Initialize();
-
-            ChangeState(PlayerIdleState);
         }
 
         protected override void Update()
         {
             base.Update();
             _costUpTime += Time.deltaTime;
-            var playerInfo = Info as PlayerData;
+            var playerInfo = Data as PlayerData;
             if (_costUpTime >= playerInfo.CostUpTime)
             {
                 _costUpTime = 0f;
@@ -101,8 +105,30 @@ namespace Sunshower
 
         public void Initialize(GameEntityData data)
         {
-            Info = data;
+            Data = data;
             SkillManager.Register(this, data.Skills);
+        }
+
+        public void OnActive()
+        {
+            ChangeState(PlayerIdleState);
+        }
+
+        public void ExecuteSkill(int skillID)
+        {
+            var skill = SkillManager.GetSkill(skillID);
+            if (skill == null)
+            {
+                return;
+            }
+
+            if (!skill.CanUse())
+            {
+                return;
+            }
+
+            PlayerSkillState.Skill = skill;
+            ChangeState(PlayerSkillState);
         }
     }
 
@@ -114,6 +140,7 @@ namespace Sunshower
 
         public void Enter(Player owner)
         {
+            owner.Animation.AnimationState.SetAnimation(0, owner.PlayerData.IdleAnimation, true);
         }
 
         public void Execute(Player owner)
@@ -125,14 +152,26 @@ namespace Sunshower
         }
     }
 
-    public class PlayerAttackState : IState<Player>
+    public class PlayerSkillState : IState<Player>
     {
+        public Skill Skill { get; set; }
+
+        private Player _owner;
+
         public void Initialize()
         {
         }
 
         public void Enter(Player owner)
         {
+            owner.Animation.AnimationState.End += OnAnimationEnd;
+            _owner = owner;
+
+            var executed = Skill.Execute();
+            if (!executed)
+            {
+                owner.ChangeState(owner.PlayerIdleState);
+            }
         }
 
         public void Execute(Player owner)
@@ -141,6 +180,12 @@ namespace Sunshower
 
         public void Exit(Player owner)
         {
+            owner.Animation.AnimationState.End -= OnAnimationEnd;
+        }
+
+        private void OnAnimationEnd(TrackEntry trackEntry)
+        {
+            _owner.ChangeState(_owner.PlayerIdleState);
         }
     }
 
@@ -152,12 +197,14 @@ namespace Sunshower
 
         public void Enter(Player owner)
         {
+            owner.Animation.AnimationState.SetAnimation(0, owner.PlayerData.DeadAnimation, false);
+            SoundManager.instance.PlaySFXAtPosition(owner.PlayerData.DeadSFX, owner.transform.position);
         }
 
         public void Execute(Player owner)
         {
             // 죽는 애니메이션 끝날 때 까지 대기
-            UnityEngine.Object.Destroy(owner.gameObject);
+            // UnityEngine.Object.Destroy(owner.gameObject);
         }
 
         public void Exit(Player owner)

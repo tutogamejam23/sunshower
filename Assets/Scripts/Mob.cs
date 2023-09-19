@@ -1,6 +1,9 @@
+using System;
 using System.Buffers;
 using System.Linq;
 using System.Text;
+using Spine;
+using Spine.Unity;
 using Unity.Mathematics;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
@@ -13,11 +16,15 @@ namespace Sunshower
         [field: SerializeField]
         public SkillManager SkillManager { get; private set; }
 
+        [field: SerializeField]
+        public SkeletonAnimation Animation { get; private set; }
+
         public MobMoveState MobMoveState { get; private set; }
         public MobAttackState MobAttackState { get; private set; }
         public MobDeadState MobDeadState { get; private set; }
 
         public GameEntityData Data { get; private set; }
+        public MobData MobData => Data as MobData;
         public IObjectPool<Mob> Pool { get; private set; }
         public Vector3 Direction { get; set; }
         public EntitySideType EntitySide { get; set; }
@@ -51,6 +58,7 @@ namespace Sunshower
         private void Awake()
         {
             Debug.Assert(SkillManager);
+            Debug.Assert(Animation);
 
             MobMoveState = new MobMoveState();
             MobAttackState = new MobAttackState();
@@ -63,7 +71,10 @@ namespace Sunshower
             MobMoveState.Initialize();
             MobAttackState.Initialize();
             MobDeadState.Initialize();
+        }
 
+        public void OnActive()
+        {
             ChangeState(MobMoveState);
         }
 
@@ -78,6 +89,7 @@ namespace Sunshower
     public class MobMoveState : IState<Mob>
     {
         private ArrayPool<IGameEntity> _entityPool;
+        private Mob _owner;
 
         public void Initialize()
         {
@@ -86,9 +98,12 @@ namespace Sunshower
         public void Enter(Mob owner)
         {
             _entityPool = new ArrayPool<IGameEntity>(30);
-            // Move animation
-        }
+            _owner = owner;
 
+            // Move animation
+            var entry = owner.Animation.AnimationState.SetAnimation(0, owner.MobData.MoveAnimation, true);
+            entry.Complete += OnAnimationComplete;
+        }
 
         public void Execute(Mob owner)
         {
@@ -102,7 +117,7 @@ namespace Sunshower
             {
                 EntitySideType.Friendly => EntitySideType.Enemy,
                 EntitySideType.Enemy => EntitySideType.Friendly,
-                _ => throw new System.NotImplementedException()
+                _ => throw new NotImplementedException()
             };
             var nearestCount = Skill.GetNearestEntities(owner, direction, range, ref span, filter: side);
             // var nearestEntities = span[..nearestCount];
@@ -124,6 +139,12 @@ namespace Sunshower
         public void Exit(Mob owner)
         {
             _entityPool.Dispose();
+        }
+
+        private void OnAnimationComplete(TrackEntry trackEntry)
+        {
+            // play walk sound
+            // SoundManager.instance.PlaySFXAtPosition(_owner.MobData.MoveSFX, _owner.transform.position);
         }
     }
 
@@ -188,23 +209,35 @@ namespace Sunshower
 
     public class MobDeadState : IState<Mob>
     {
+        private Mob _owner;
+
         public void Initialize()
         {
         }
 
         public void Enter(Mob owner)
         {
+            _owner = owner;
+            var entry = owner.Animation.AnimationState.SetAnimation(0, owner.MobData.DeadAnimation, false);
+            SoundManager.instance.PlaySFXAtPosition(owner.MobData.DeadSFX, owner.transform.position);
+            entry.Complete += OnAnimationComplete;
         }
 
         public void Execute(Mob owner)
         {
             // 죽는 애니메이션 끝날 때 까지 대기
-            owner.Pool.Release(owner);
+
         }
 
         public void Exit(Mob owner)
         {
             // Execute에서 Pool.Release를 호출하므로 해당 메소드 실행 안됨!
+        }
+
+        private void OnAnimationComplete(TrackEntry trackEntry)
+        {
+            trackEntry.Complete -= OnAnimationComplete;
+            _owner.Pool.Release(_owner);
         }
     }
 }

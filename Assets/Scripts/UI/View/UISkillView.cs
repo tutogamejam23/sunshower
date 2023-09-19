@@ -60,20 +60,12 @@ namespace Sunshower
         private void CheckSkillUse()
         {
             var player = Stage.Instance.ActivePlayer;
-            if (player != null)
-            {
-                yeoubul.interactable = _skills[YeobulID].CanUse();
-                yeougusul.interactable = _skills[YeougusulID].CanUse();
-                kaeng.interactable = _skills[KaengID].CanUse();
-                yeoubi.interactable = _skills[YeoubiID].CanUse();
-            }
-            else
-            {
-                yeoubul.interactable = false;
-                yeougusul.interactable = false;
-                kaeng.interactable = false;
-                yeoubi.interactable = false;
-            }
+            var interactable = player != null && player.CurrentState == player.PlayerIdleState;
+
+            yeoubul.interactable = interactable;
+            yeougusul.interactable = interactable;
+            kaeng.interactable = interactable;
+            yeoubi.interactable = interactable;
         }
 
         private void TargetingGround()
@@ -97,14 +89,14 @@ namespace Sunshower
                 }
             }
 
-            yeoubul.enabled = !_targetingGround;
-            kaeng.enabled = !_targetingGround;
-            yeoubi.enabled = !_targetingGround;
+            yeoubul.interactable = !_targetingGround;
+            kaeng.interactable = !_targetingGround;
+            yeoubi.interactable = !_targetingGround;
         }
 
         private void OnPlayerSpawned(object sender, Player spawnedPlayer)
         {
-            var data = spawnedPlayer.Info as PlayerData;
+            var data = spawnedPlayer.Data as PlayerData;
 
             foreach (var skill in spawnedPlayer.SkillManager.Skills)
             {
@@ -117,9 +109,6 @@ namespace Sunshower
 
         private void OnPlayerCostChanged(object sender, int changedCost)
         {
-            var player = Stage.Instance.ActivePlayer;
-            var data = player.Info as PlayerData;
-
             costText.text = changedCost.ToString();
             if (_costChangedTween != null && _costChangedTween.IsPlaying())
             {
@@ -133,14 +122,12 @@ namespace Sunshower
 
         public void Yeoubul()
         {
-            Debug.Log("Yeoubul");
-            var skill = _skills[YeobulID];
-            if (!skill.CanUse())
+            var player = Stage.Instance.ActivePlayer;
+            if (player == null)
             {
-                yeoubul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
                 return;
             }
-            skill.Execute();
+            player.ExecuteSkill(YeobulID);
         }
 
         public void Yeougusul()
@@ -164,34 +151,30 @@ namespace Sunshower
 
         public void Kaeng()
         {
-            var skill = _skills[KaengID];
-            if (!skill.CanUse())
+            var player = Stage.Instance.ActivePlayer;
+            if (player == null)
             {
-                yeoubul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
                 return;
             }
-            skill.Execute();
+            player.ExecuteSkill(KaengID);
         }
 
         public void Yeoubi()
         {
-            var skill = _skills[YeoubiID];
-            if (!skill.CanUse())
+            var player = Stage.Instance.ActivePlayer;
+            if (player == null)
             {
-                yeoubul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
                 return;
             }
-            skill.Execute();
+            player.ExecuteSkill(YeoubiID);
         }
 
         public override void HidePanel()
         {
-            throw new System.NotImplementedException();
         }
 
         public override void ShowPanel()
         {
-            throw new System.NotImplementedException();
         }
     }
 }

@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LogEnabled: 0
   <SkillManager>k__BackingField: {fileID: 7276841795507588406}
+  <Animation>k__BackingField: {fileID: 4068735973521798694}
 --- !u!114 &7276841795507588406
 MonoBehaviour:
   m_ObjectHideFlags: 0

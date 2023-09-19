@@ -24,8 +24,11 @@ MonoBehaviour:
     multiplyMaterials: []
     screenMaterials: []
   skeletonDataModifiers: []
-  fromAnimation: []
-  toAnimation: []
-  duration: []
-  defaultMix: 0.2
+  fromAnimation:
+  - Walk&Attack
+  toAnimation:
+  - Die
+  duration:
+  - 3
+  defaultMix: 0.94
   controller: {fileID: 0}

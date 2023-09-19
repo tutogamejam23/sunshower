@@ -44,7 +44,7 @@ public class UIStageProfileView : UIView
     {
 
         var player = sender as Player;
-        hpValueImg.fillAmount = (float)changedHP.current / player.Info.HP;
+        hpValueImg.fillAmount = (float)changedHP.current / player.Data.HP;
         if (player.LogEnabled)
         {
             Debug.Log($"HP Changed: {changedHP.previous} -> {changedHP.current}");

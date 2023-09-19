@@ -112,10 +112,11 @@ namespace Sunshower
             }
 
             // Set animation
-            // var animation = Owner.Transform.GetComponent<SkeletonAnimation>();
-            // var entry = animation.state.SetAnimation(0, Info.Animation, false);
-            // Manager.Delay = entry.AnimationTime;
-            Manager.Delay = 1f;
+            var animation = Owner.Transform.GetComponent<SkeletonAnimation>();
+            var entry = animation.state.SetAnimation(0, Info.Animation, false);
+            Manager.Delay = entry.AnimationTime;
+
+            SoundManager.instance.PlaySFXAtPosition(Info.SFX, Owner.Transform.position);
 
             Manager.UsePosition = Vector3.zero;
             Cooldown = Info.Cooldown;
@@ -273,6 +274,10 @@ namespace Sunshower
                 var hit = hits[i];
                 if (hit.transform != target.Transform && hit.collider.TryGetComponent(out IGameEntity entity))
                 {
+                    if (entity.HP == 0)
+                    {
+                        continue;
+                    }
                     if (filter != EntitySideType.None && entity.EntitySide != filter)
                     {
                         continue;

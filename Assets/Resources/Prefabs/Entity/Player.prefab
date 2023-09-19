@@ -133,6 +133,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LogEnabled: 0
   <SkillManager>k__BackingField: {fileID: 5893791832984301330}
+  <Animation>k__BackingField: {fileID: 2151910219556004650}
+  <IdleAnimation>k__BackingField: breath
+  <Skill1Animation>k__BackingField: skill
+  <Skill2Animation>k__BackingField: skill
+  <Skill3Animation>k__BackingField: skill
+  <Skill4Animation>k__BackingField: foxrain
+  <DeadAnimation>k__BackingField: death
 --- !u!114 &5893791832984301330
 MonoBehaviour:
   m_ObjectHideFlags: 0

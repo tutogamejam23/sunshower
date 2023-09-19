@@ -1,6 +1,9 @@
 - ID: 0
   Name: 달 (䵣)
   PrefabPath: Entity/Player
+  IdleAnimation: breath
+  DeadAnimation: death
+  DeadSFX: fox_kaeng
   HP: 10000
   MaxCost: 30
   CostUpTime: 1

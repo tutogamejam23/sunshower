@@ -22,12 +22,19 @@ namespace Sunshower
 
     public class PlayerData : GameEntityData
     {
+        public string IdleAnimation { get; set; }
+        public string DeadAnimation { get; set; }
+        public string DeadSFX { get; set; }
         public int MaxCost { get; set; }
         public float CostUpTime { get; set; }
     }
 
     public class MobData : GameEntityData
     {
+        public string MoveAnimation { get; set; }
+        public string DeadAnimation { get; set; }
+        public string MoveSFX { get; set; }
+        public string DeadSFX { get; set; }
         public float Range { get; set; }
     }
 
@@ -37,6 +44,7 @@ namespace Sunshower
         public string Name { get; set; }
         public string Description { get; set; }
         public string Animation { get; set; }
+        public string SFX { get; set; }
         public int Cost { get; set; }
         public float Cooldown { get; set; }
         public SkillCommandBase[] Commands { get; set; }
@@ -90,6 +98,7 @@ namespace Sunshower
         public class PlayAreaEffect : SkillCommandBase
         {
             public string Effect { get; set; }
+            public string SFX { get; set; }
             public float Duration { get; set; }
         }
 

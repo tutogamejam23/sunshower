@@ -6,7 +6,8 @@
 - ID: 1000
   Name: 여우불
   Description: 5개의 여우불을 날린다. 여우불은 앞으로 날아가서 적에게 대미지를 입힌다.
-  Animation: Yeoubul
+  Animation: skill
+  SFX: fox_fire
   Cost: 2
   Cooldown: 1
   Commands:
@@ -28,7 +29,8 @@
   Description: |
     여우가 울부짖어 동물을 부른다.
     소환된 동물을 적을 공격한다.
-  Animation: Kaeng
+  Animation: skill
+  SFX: fox_kaeng
   Cost: 4
   Commands:
     - Command: SpawnRandomMobs
@@ -43,7 +45,8 @@
     여우구슬을 땅에 심는다.
     원하는 위치를 지정할 수 있으며, 바닥에 묻힐 경우 반짝인다.
     여우구슬이 묻힌 땅을 적이 밟으면 매혹되어 같은 팀을 공격한다.
-  Animation: Yeouguseul
+  Animation: skill
+  SFX: fox_bead
   Cost: 8
   Commands:
     - Command: InstallSkillToPosition
@@ -62,11 +65,13 @@
     여우가 울며 비를 내린다.
     비를 맞은 아군은 체력이 회복되며 이동속도 및 공격속도가 증가한다.
     비를 맞은 몬스터는 지속적으로 체력이 닳으며, 이동속도 및 공격속도가 감소한다.
-  Animation: Yeoubi
+  Animation: foxrain
+  SFX: fox_kaeng
   Cost: 10
   Commands:
     - Command: PlayAreaEffect
       Effect: Yeoubi
+      SFX: fox_rain
       Duration: 5
 
     - Command: BuffToAll
@@ -89,7 +94,8 @@
 - ID: 2000
   Name: 정찰병 일반 공격
   Description: ""
-  Animation: Attack
+  Animation: attack
+  SFX: monster_axe
   Cooldown: 1
   Commands:
     - Command: GetTargetsInMobRange
@@ -102,7 +108,8 @@
 - ID: 2001
   Name: 총잡이 일반 공격
   Description: ""
-  Animation: Attack
+  Animation: Walk&Attack
+  SFX: monster_gun
   Cooldown: 1.3
   Commands:
     - Command: GetTargetsInMobRange
@@ -114,8 +121,9 @@
 
 - ID: 2002
   Name: 고라니 일반 공격
+  SFX: gorani_attack
   Description: ""
-  Animation: Atack
+  Animation: attack
   Cooldown: 1
   Commands:
     - Command: GetTargetsInMobRange
@@ -129,6 +137,7 @@
   Name: 호랑이 일반 공격
   Description: ""
   Animation: Atack
+  SFX: tiger_attack
   Cooldown: 1.2
   Commands:
     - Command: GetTargetsInMobRange
@@ -142,7 +151,8 @@
 - ID: 3000
   Name: 멸 (滅)
   Description: 전방으로 부적을 던져 피해를 입힌다.
-  Animation: Myul
+  Animation: skill1
+  SFX: boss_1
   Cooldown: 2
   Commands:
      - Command: ShotProjectile
@@ -159,7 +169,8 @@
 - ID: 3001
   Name: 현 (顯)
   Description: 사냥꾼들을 부른다.
-  Animation: Hyun
+  Animation: skill2
+  SFX: boss_2
   Cooldown: 20
   Commands:
     - Command: SpawnRandomMobs
@@ -171,7 +182,8 @@
 - ID: 3002
   Name: 봉 (封)
   Description: 전방의 적에게 즉사에 가까운 대미지를 준다.
-  Animation: Bong
+  Animation: skill1
+  SFX: boss_3
   Cooldown: 15
   Commands:
     - Command: GetTargetsInMobRange
