@@ -14,9 +14,8 @@ GameObject:
   - component: {fileID: 7797976877312359075}
   - component: {fileID: 3850880502545143365}
   - component: {fileID: 8425651051458308763}
-  - component: {fileID: 4523324592279942691}
-  - component: {fileID: -8127461009080057496}
-  m_Layer: 0
+  - component: {fileID: 8815255248897786523}
+  m_Layer: 3
   m_Name: Scout
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -158,7 +157,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -187,8 +186,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LogEnabled: 0
-  _skillManager: {fileID: 4523324592279942691}
---- !u!114 &4523324592279942691
+  <SkillManager>k__BackingField: {fileID: 8815255248897786523}
+--- !u!114 &8815255248897786523
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -198,17 +197,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6153fa0c4c600eb48b6380211c997171, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &-8127461009080057496
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6251057928244207811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1184db8c4084a747810975782e7f90e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

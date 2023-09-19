@@ -3,6 +3,7 @@ using System;
 using Unity.Collections;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Sunshower
 {
@@ -27,6 +28,8 @@ namespace Sunshower
 
         private void Awake()
         {
+            SceneManager.LoadScene("StageUIScene", LoadSceneMode.Additive);
+
             if (Instance == null)
             {
                 Instance = this;
@@ -76,7 +79,7 @@ namespace Sunshower
 
         public void Initialize()
         {
-            _timer = 2;
+            _timer = 0; // 시작 딜레이
             _currentTimer = 0;
         }
 
@@ -128,7 +131,7 @@ namespace Sunshower
                 if (_time >= _spawnDelay)
                 {
                     _time = 0f;
-                    owner.MobSpawner.Spawn(_spawnQueue.Dequeue(), MobType.Enemy);
+                    owner.MobSpawner.Spawn(_spawnQueue.Dequeue(), EntitySideType.Enemy);
                 }
             }
             else if (owner.MobSpawner.ActiveEnemyMobs.Count == 0)
