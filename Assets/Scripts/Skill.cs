@@ -1,287 +1,155 @@
 using System;
 using System.Buffers;
-using System.Collections;
-using System.Collections.Generic;
-using Spine.Unity;
+
 using Unity.Mathematics;
 
 using UnityEngine;
 
 namespace Sunshower
 {
-    [AttributeUsage(System.AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    public sealed class SkillAttribute : Attribute
-    {
-        public int ID { get; }
-
-        public SkillAttribute(int id)
-        {
-            ID = id;
-        }
-    }
-
     public class Skill
     {
         public IGameEntity Owner { get; }
-        public SkillManager Manager { get; set; }
-        public SkillData Info { get; }
-        public float Cooldown { get; set; }
+        public SkillData Data { get; }
+        public float Cooldown { get => cooldown; set => cooldown = math.max(value, 0f); }
+        public float DelayTime { get => delayTime; set => delayTime = math.max(value, 0f); }
 
-        public Skill(SkillManager manager, SkillData info)
+        private float cooldown;
+        private float delayTime;
+
+        public Skill(IGameEntity owner, SkillData data)
         {
-            Owner = manager.Owner;
-            Manager = manager;
-            Info = info;
+            Owner = owner;
+            Data = data;
         }
 
-        public bool CanUse()
+        public bool Use()
         {
-            if (Manager.Delay > 0f)
+            if (Data.Cost > 0)
             {
-                return false;
-            }
-            if (Cooldown > 0f)
-            {
-                return false;
-            }
-            if (Owner is ICostEntity costEntity && costEntity.Cost < Info.Cost)
-            {
-                return false;
-            }
-
-
-            return true;
-        }
-
-        public bool Execute()
-        {
-            if (!CanUse())
-            {
-                return false;
-            }
-
-            using ArrayPool<IGameEntity> targetsPool = new(30);
-            Span<IGameEntity> targets = targetsPool.Span;
-
-            foreach (var command in Info.Commands)
-            {
-                bool ready = command switch
+                if (Owner is not ICostEntity costEntity)
                 {
-                    // ready
-                    SkillCommand.GetTargetsInMobRange getTargetsInMobRange => GetTargetsInMobRange(getTargetsInMobRange, ref targets),
-                    _ => true
-                };
-                if (!ready)
+                    Debug.LogError($"Entity ID {Owner.ID}는 ICostEntity를 구현하지 않았습니다!");
+                    return false;
+                }
+                if (costEntity.Cost < Data.Cost)
                 {
                     return false;
                 }
+            }
 
-                switch (command)
+            if (Cooldown > 0f || DelayTime > 0f)
+            {
+                return false;
+            }
+
+            if (Data.Damage > 0 && Data.Range > 0f)
+            {
+                var nearestEnties = ArrayPool<IGameEntity>.Shared.Rent(30);
+                try
                 {
-                    case SkillCommand.AttackTarget attackTarget:
-                        AttackTarget(attackTarget, in targets);
-                        break;
+                    var nearestCount = GetNearestEntity(Owner, Data.Range, ref nearestEnties);
+                    if (nearestCount == 0)
+                    {
+                        return false;
+                    }
+                    IGameEntity targetEntity = null;
+                    if (Owner is Player player)
+                    {
+                        for (int i = 0; i < nearestCount; i++)
+                        {
+                            IGameEntity entity = nearestEnties[i];
+                            if (entity is Mob mob && mob.MobType == MobType.Enemy)
+                            {
+                                targetEntity = mob;
+                                break;
+                            }
+                        }
+                    }
+                    else if (Owner is Mob mob)
+                    {
+                        for (int i = 0; i < nearestCount; i++)
+                        {
+                            IGameEntity entity = nearestEnties[i];
+                            if (entity is Player playerTarget)
+                            {
+                                targetEntity = playerTarget;
+                                break;
+                            }
+                            else if (entity is Mob mobTarget && mobTarget.MobType != mob.MobType)
+                            {
+                                targetEntity = mobTarget;
+                                break;
+                            }
+                        }
+                    }
 
-                    case SkillCommand.ShotProjectile shotProjectile:
-                        ShotProjectile(shotProjectile);
-                        break;
-
-                    case SkillCommand.InstallSkillToPosition installSkillToPosition:
-                        InstallSkillToPosition(installSkillToPosition, Manager.UsePosition);
-                        break;
-
-                    case SkillCommand.SpawnRandomMobs spawnRandomMobs:
-                        SpawnRandomMobs(spawnRandomMobs);
-                        break;
-
-                    case SkillCommand.BuffToAll buffToAll:
-                        BuffToAll(buffToAll);
-                        break;
-
-                    case SkillCommand.PlayAreaEffect playAreaEffect:
-                        PlayAreaEffect(playAreaEffect);
-                        break;
-
-                    case SkillCommand.PlayEffectToTarget playEffectToTarget:
-                        PlayEffectToTarget(playEffectToTarget, in targets);
-                        break;
-
-                    default:
-                        break;
+                    if (targetEntity is null)
+                    {
+                        return false;
+                    }
+                    targetEntity.HP -= Data.Damage;
+                }
+                finally
+                {
+                    ArrayPool<IGameEntity>.Shared.Return(nearestEnties);
                 }
             }
 
-            // Set animation
-            // var animation = Owner.Transform.GetComponent<SkeletonAnimation>();
-            // var entry = animation.state.SetAnimation(0, Info.Animation, false);
-            // Manager.Delay = entry.AnimationTime;
-            Manager.Delay = 1f;
-
-            Manager.UsePosition = Vector3.zero;
-            Cooldown = Info.Cooldown;
-            if (Owner is ICostEntity costEntity)
-            {
-                costEntity.Cost -= Info.Cost;
-            }
-
-#if UNITY_EDITOR
-            if (Owner is Player player && player.LogEnabled)
-            {
-                Debug.Log($"플레이어가 {Info.Name} 스킬을 사용했습니다.");
-            }
-            else if (Owner is Mob mob && mob.LogEnabled)
-            {
-                Debug.Log($"몹({mob.name})이 {Info.Name} 스킬을 사용했습니다.");
-            }
-#endif
+            Cooldown = Data.Cooldown;
+            DelayTime = Data.Delay;
+            // Debug.Log($"{Owner.ID}가 {Data.Name} 스킬을 사용했습니다. Cooldown: {Cooldown}, Delay: {DelayTime}");
             return true;
         }
 
-        private void PlayEffectToTarget(SkillCommand.PlayEffectToTarget playEffectToTarget, in Span<IGameEntity> targets)
+
+        private struct TargetEntity
         {
+            public static readonly TargetEntity Null = new() { ID = -1, Position = float3.zero };
+
+            public int ID;
+            public float3 Position;
+
+            public override bool Equals(object obj)
+                => obj is TargetEntity entity
+                && Equals(entity);
+            public bool Equals(TargetEntity other)
+                => ID == other.ID
+                && Position.Equals(other.Position);
+            public override int GetHashCode() => HashCode.Combine(ID, Position);
+            public static bool operator ==(TargetEntity left, TargetEntity right) => left.Equals(right);
+            public static bool operator !=(TargetEntity left, TargetEntity right) => !(left == right);
         }
 
-        private void InstallSkillToPosition(SkillCommand.InstallSkillToPosition installSkillToPosition, Vector3 usePosition)
+        public static int GetNearestEntity(IGameEntity target, float range, ref IGameEntity[] nearestEntity)
         {
-            if (usePosition == Vector3.zero)
+            // 몹이 뒤에 있는 몹을 잡는 경우가 있나?
+            var direction = target.Direction;
+            var hits = ArrayPool<RaycastHit2D>.Shared.Rent(30);
+            try
             {
-                return;
-            }
-
-            // InstallSkill class
-            var prefab = Resources.Load<GameObject>(installSkillToPosition.Prefab);
-            UnityEngine.Object.Instantiate(prefab, usePosition, quaternion.identity);
-        }
-
-        private bool GetTargetsInMobRange(SkillCommand.GetTargetsInMobRange getTargetsInMobRange, ref Span<IGameEntity> targets)
-        {
-            if (Owner is not Mob mob) // GetTargetsInRange는 Mob 전용
-            {
-                Debug.LogError("Owner is not Mob!");
-                return false;
-            }
-            Debug.Assert(getTargetsInMobRange.TargetCount > 0);
-
-            var isCharming = Manager.IsCharming > 0;
-            var mobData = mob.Data as MobData;
-            var direction = !isCharming ? mob.Direction : mob.Direction * -1f;
-            var targetSide = !isCharming ? getTargetsInMobRange.Target : getTargetsInMobRange.Target switch
-            {
-                EntitySideType.Friendly => EntitySideType.Enemy,
-                EntitySideType.Enemy => EntitySideType.Friendly,
-                _ => throw new NotImplementedException()
-            };
-
-            var count = GetNearestEntities(Owner, direction, mobData.Range, ref targets, filter: targetSide);
-            if (getTargetsInMobRange.TargetCount < count) // Span 길이를 원하는 만큼 잘라서 반환
-            {
-                count = getTargetsInMobRange.TargetCount;
-            }
-            targets = targets[..count];
-
-            return count > 0; // 범위 내에 타겟이 있으면 성공
-        }
-
-        private void AttackTarget(SkillCommand.AttackTarget attackTarget, in Span<IGameEntity> targets)
-        {
-            foreach (var target in targets)
-            {
-                target.HP -= attackTarget.Damage;
-            }
-        }
-
-        private void SpawnRandomMobs(SkillCommand.SpawnRandomMobs spawnRandomMobs)
-        {
-            // 리스트가 2개 이상이면 랜덤 선택
-            var randomIdx = UnityEngine.Random.Range(0, spawnRandomMobs.Queue.Count);
-            Stage.Instance.StartCoroutine(SpawnMobs(spawnRandomMobs.Queue[randomIdx], spawnRandomMobs.SpawnDelay, Owner.EntitySide));
-        }
-
-        private IEnumerator SpawnMobs(List<int> mobs, float spawnDelay, EntitySideType entitySide)
-        {
-            var wait = new WaitForSeconds(spawnDelay);
-            foreach (var mobID in mobs)
-            {
-                Stage.Instance.MobSpawner.Spawn(mobID, entitySide);
-                yield return wait;
-            }
-        }
-
-        private void ShotProjectile(SkillCommand.ShotProjectile shotProjectile)
-        {
-            // TODO: 미리 캐싱
-            var prefab = Resources.Load<GameObject>(shotProjectile.Prefab);
-            Stage.Instance.StartCoroutine(ShotProjectile(prefab, shotProjectile));
-        }
-
-        private IEnumerator ShotProjectile(GameObject prefab, SkillCommand.ShotProjectile info)
-        {
-            var wait = new WaitForSeconds(info.ShotDelay);
-            for (int i = 0; i < info.Count; i++)
-            {
-                // var projectile = UnityEngine.Object.Instantiate(prefab, Owner.Transform.position, quaternion.identity);
-                // var projectileComponent = projectile.GetComponent<Projectile>();
-                // projectileComponent.Speed = info.Speed;
-                // projectileComponent.HitTarget = info.HitTarget;
-                // projectileComponent.Owner = Owner;
-                yield return wait;
-            }
-        }
-
-        private void PlayAreaEffect(SkillCommand.PlayAreaEffect playAreaEffect)
-        {
-            // TODO: 이펙트 재생
-        }
-
-        private void BuffToAll(SkillCommand.BuffToAll buffToAll)
-        {
-            switch (buffToAll.Target)
-            {
-                case EntitySideType.Friendly:
-                    // Buff 타입이 struct라서 그냥 인자로 넘겨도 알아서 깊은복사가 됨
-                    Stage.Instance.ActivePlayer.SkillManager.AddBuff(buffToAll.Buff);
-                    foreach (var friendlyMob in Stage.Instance.MobSpawner.ActiveFriendlyMobs)
-                    {
-                        friendlyMob.SkillManager.AddBuff(buffToAll.Buff);
-                    }
-                    break;
-
-                case EntitySideType.Enemy:
-                    foreach (var enemyMob in Stage.Instance.MobSpawner.ActiveEnemyMobs)
-                    {
-                        enemyMob.SkillManager.AddBuff(buffToAll.Buff);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        public static int GetNearestEntities(IGameEntity target, Vector3 direction, float range, ref Span<IGameEntity> nearestEntities, EntitySideType filter = EntitySideType.None)
-        {
-            using var hits = new ArrayPool<RaycastHit2D>(nearestEntities.Length);
-            var hitCount = Physics2D.RaycastNonAlloc(target.Transform.position, new Vector2(direction.x, 0f), hits.Array, range, 1 << 3); // Entity Layer
-            if (hitCount == 0)
-            {
-                return 0;
-            }
-
-            var entityCount = 0;
-            for (int i = 0; i < hitCount; i++)
-            {
-                var hit = hits[i];
-                if (hit.transform != target.Transform && hit.collider.TryGetComponent(out IGameEntity entity))
+                var hitCount = Physics2D.RaycastNonAlloc(target.Transform.position, new Vector2(direction.x, 0f), hits, range, 1 << 3); // Entity Layer
+                if (hitCount == 0)
                 {
-                    if (filter != EntitySideType.None && entity.EntitySide != filter)
-                    {
-                        continue;
-                    }
-                    nearestEntities[entityCount++] = entity;
+                    return 0;
                 }
-            }
 
-            return entityCount;
+                var entityCount = 0;
+                for (int i = 0; i < hitCount; i++)
+                {
+                    var hit = hits[i];
+                    if (hit.transform != target.Transform && hit.collider.TryGetComponent(out IGameEntity entity))
+                    {
+                        nearestEntity[entityCount++] = entity;
+                    }
+                }
+
+                return entityCount;
+            }
+            finally
+            {
+                ArrayPool<RaycastHit2D>.Shared.Return(hits);
+            }
         }
     }
 }

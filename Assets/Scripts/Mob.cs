@@ -2,25 +2,31 @@ using System.Buffers;
 using System.Linq;
 using System.Text;
 using Unity.Mathematics;
-using UnityEditor.ShaderKeywordFilter;
+
 using UnityEngine;
 using UnityEngine.Pool;
 
 namespace Sunshower
 {
-    public class Mob : StateMachine<Mob>, IGameEntity, IEntityPoolItem<Mob>, ISkillEntity
+    public enum MobType
     {
-        [field: SerializeField]
-        public SkillManager SkillManager { get; private set; }
+        Friendly, Enemy
+    }
+
+    public class Mob : StateMachine<Mob>, IGameEntity, IEntityPoolItem<Mob>
+    {
+        [SerializeField] private SkillManager _skillManager;
 
         public MobMoveState MobMoveState { get; private set; }
         public MobAttackState MobAttackState { get; private set; }
         public MobDeadState MobDeadState { get; private set; }
 
+        public SkillManager SkillManager => _skillManager;
         public GameEntityData Data { get; private set; }
         public IObjectPool<Mob> Pool { get; private set; }
+
+        public MobType MobType { get; set; }
         public Vector3 Direction { get; set; }
-        public EntitySideType EntitySide { get; set; }
 
         public Transform Transform => transform;
 
@@ -38,7 +44,7 @@ namespace Sunshower
                 }
 
                 // TODO: 여기다 텍스쳐 깜빡이는 효과 넣기
-                _hp = math.max(math.min(value, Data.HP), 0);
+                _hp = math.max(value, 0);
                 if (_hp == 0)
                 {
                     ChangeState(MobDeadState);
@@ -50,7 +56,7 @@ namespace Sunshower
 
         private void Awake()
         {
-            Debug.Assert(SkillManager);
+            Debug.Assert(_skillManager, "SkillManager 컴포넌트가 연결되어 있지 않습니다!");
 
             MobMoveState = new MobMoveState();
             MobAttackState = new MobAttackState();
@@ -71,65 +77,89 @@ namespace Sunshower
         {
             Pool = pool;
             Data = data;
-            SkillManager.Register(this, data.Skills);
+            SkillManager.Initialize(this, Data.Skills.Select(id => Stage.Instance.DataTable.SkillTable[id]));
         }
     }
 
     public class MobMoveState : IState<Mob>
     {
-        private ArrayPool<IGameEntity> _entityPool;
-
         public void Initialize()
         {
         }
 
         public void Enter(Mob owner)
         {
-            _entityPool = new ArrayPool<IGameEntity>(30);
-            // Move animation
         }
 
+        StringBuilder builder = new StringBuilder();
 
         public void Execute(Mob owner)
         {
-            var mobData = owner.Data as MobData;
-            var range = mobData.Range;
-            var span = _entityPool.Span;
-
-            var isCharming = owner.SkillManager.IsCharming > 0;
-            var direction = isCharming ? owner.Direction * -1f : owner.Direction;
-            var side = isCharming ? owner.EntitySide : owner.EntitySide switch
+            var range = -1f;
+            foreach (var skill in owner.SkillManager.SkillMap.Values)
             {
-                EntitySideType.Friendly => EntitySideType.Enemy,
-                EntitySideType.Enemy => EntitySideType.Friendly,
-                _ => throw new System.NotImplementedException()
-            };
-            var nearestCount = Skill.GetNearestEntities(owner, direction, range, ref span, filter: side);
-            // var nearestEntities = span[..nearestCount];
+                if (skill.Cooldown <= 0f && skill.Data.Range > 0f && skill.Data.Range > range)
+                {
+                    range = skill.Data.Range;
+                }
+            }
 
 
-            // 몹 공격범위에 공격 가능한 대상이 있으면 공격
-            if (nearestCount > 0)
+            // 가지고 있는 스킬 중 가장 공격범위가 먼 스킬을 기준으로 공격범위 내에 공격 대상이 있는지 확인
+            var nearestEnties = ArrayPool<IGameEntity>.Shared.Rent(30);
+            try
             {
-                owner.ChangeState(owner.MobAttackState);
+                var nearestCount = Skill.GetNearestEntity(owner, range, ref nearestEnties);
+                if (nearestCount > 0)
+                {
+                    if (owner.LogEnabled)
+                    {
+                        builder.Clear();
+                        builder.Append(Time.time).Append(": ");
+                        for (int i = 0; i < nearestCount; i++)
+                        {
+                            builder.Append(nearestEnties[i].ID).Append(", ");
+                        }
+                        Debug.Log(builder.ToString());
+                    }
+
+                    for (int i = 0; i < nearestCount; i++)
+                    {
+                        var entity = nearestEnties[i];
+                        if (entity is Player)
+                        {
+                            owner.ChangeState(owner.MobAttackState);
+                            return;
+                        }
+                        else if (entity is Mob mob && mob.MobType != owner.MobType)
+                        {
+                            owner.ChangeState(owner.MobAttackState);
+                            return;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                // Rent 했으면 무조건 Return해줘야 Memory Leak이 안생김
+                ArrayPool<IGameEntity>.Shared.Return(nearestEnties);
+            }
+            if (range < 0f)
+            {
                 return;
             }
 
-            // 매혹에 걸린 경우 반대 방향으로 이동
-
-            var speedRate = owner.SkillManager.SpeedRateBuffAverage;
-            owner.transform.position += 0.1f * owner.Data.Speed * speedRate * Time.deltaTime * direction;
+            owner.transform.position += 0.1f * owner.Data.Speed * Time.deltaTime * owner.Direction;
         }
 
         public void Exit(Mob owner)
         {
-            _entityPool.Dispose();
         }
     }
 
     public class MobAttackState : IState<Mob>
     {
-        private ArrayPool<IGameEntity> _entityPool;
+        private Skill _usedSkill;
 
         public void Initialize()
         {
@@ -137,52 +167,33 @@ namespace Sunshower
 
         public void Enter(Mob owner)
         {
-            _entityPool = new ArrayPool<IGameEntity>(30);
+            _usedSkill = null;
+            foreach (var skill in owner.SkillManager.SkillMap.Values)
+            {
+                if (skill.Use())
+                {
+                    _usedSkill = skill;
+                    break;
+                }
+            }
+            if (_usedSkill is null)
+            {
+                // 사용할 수 있는 스킬이 없으면 다시 MoveState로 변경
+                owner.ChangeState(owner.MobMoveState);
+            }
         }
 
         public void Execute(Mob owner)
         {
-            var mobData = owner.Data as MobData;
-            var range = mobData.Range;
-            var span = _entityPool.Span;
-
-            var isCharming = owner.SkillManager.IsCharming > 0;
-            var direction = isCharming ? owner.Direction * -1f : owner.Direction;
-            var side = isCharming ? owner.EntitySide : owner.EntitySide switch
+            if (_usedSkill.DelayTime <= 0f)
             {
-                EntitySideType.Friendly => EntitySideType.Enemy,
-                EntitySideType.Enemy => EntitySideType.Friendly,
-                _ => throw new System.NotImplementedException()
-            };
-            var nearestCount = Skill.GetNearestEntities(owner, direction, range, ref span, filter: side);
-            if (nearestCount == 0)
-            {
+                // 딜레이가 끝나면 다시 MoveState로 변경
                 owner.ChangeState(owner.MobMoveState);
-                return;
-            }
-
-            if (owner.SkillManager.Delay > 0f)
-            {
-                // 딜레이 끝날 때 까지 대기
-                return;
-            }
-
-            var skills = owner.SkillManager.Skills;
-            // 보통 쿨타임이 긴 스킬이 뒤에 있기 때문에 뒤에서부터 체크
-            for (int i = skills.Count - 1; i >= 0; i--)
-            {
-                var skill = skills[i];
-                if (skill.CanUse())
-                {
-                    skill.Execute();
-                    break;
-                }
             }
         }
 
         public void Exit(Mob owner)
         {
-            _entityPool.Dispose();
         }
     }
 
