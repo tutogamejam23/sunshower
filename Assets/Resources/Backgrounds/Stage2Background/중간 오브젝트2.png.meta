@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 86a32cfa23c57d747b88d4b6393e8f4c
+guid: 9429d407c97f6574f950f44fd7b49ffc
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_0"
+      name: "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B82_0"
       rect:
         serializedVersion: 2
         x: 433
@@ -134,13 +134,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_1"
+      name: "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B82_1"
       rect:
         serializedVersion: 2
         x: 1105
         y: 511
         width: 731
-        height: 379
+        height: 378
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,7 +155,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_2"
+      name: "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B82_2"
       rect:
         serializedVersion: 2
         x: 3084
@@ -176,7 +176,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_3"
+      name: "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B82_3"
       rect:
         serializedVersion: 2
         x: 4024
@@ -199,7 +199,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: c4c843e490460164eb002ee1ab1b2369
+    spriteID: 437ce0160ad925540b752778a7282352
     internalID: 0
     vertices: []
     indices: 
@@ -207,10 +207,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_0": -5843783145858087473
-      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_1": -7725293943353900486
-      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_2": -8480659987501729076
-      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_3": 2375842104774133784
+      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B82_0": -5843783145858087473
+      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B82_1": -7725293943353900486
+      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B82_2": -8480659987501729076
+      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B82_3": 2375842104774133784
+      "\uC911\uAC04 \uC624\uBE0C\uC81D\uD2B8_4": -8289593135025839226
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

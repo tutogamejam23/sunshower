@@ -6,6 +6,8 @@ namespace Sunshower
 {
     public class CameraMove : MonoBehaviour
     {
+        public AudioClip clip;
+
         public float CameraSpeed = 10;
         public float CameraControlArea = 100;
         public float offsetX;
@@ -37,6 +39,7 @@ namespace Sunshower
             {
                 offsetX = -1;
                 isMouseinArea = true;
+                SoundManager.instance.PlayBGM(clip);
             }
             else if (Input.mousePosition.x > Screen.width - CameraControlArea && Input.mousePosition.x <= Screen.width && Input.mousePosition.y > 0 && Input.mousePosition.y < Screen.height)
             {
