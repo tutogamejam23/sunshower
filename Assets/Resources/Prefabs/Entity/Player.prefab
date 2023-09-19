@@ -9,12 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3887681664941062726}
-  - component: {fileID: 1310369617168819364}
   - component: {fileID: 5231007851222878451}
   - component: {fileID: 2151910219556004650}
   - component: {fileID: 799003858441690247}
   - component: {fileID: 5893791832984301330}
   - component: {fileID: 4000928619650688114}
+  - component: {fileID: 5651883658681479975}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -37,14 +37,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1310369617168819364
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3277547940177945073}
-  m_Mesh: {fileID: 0}
 --- !u!23 &5231007851222878451
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -65,7 +57,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4cc528b85b672844ea0878a897e5352c, type: 2}
+  - {fileID: 2100000, guid: 9c74157afe9c02e4d9ac1a0499a48dc8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -99,7 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 0ececb33f0eb9ae4480e81611a6d8677, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 92b8dad8f027aaa4b8fb5ffe7b1f1f29, type: 2}
   initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -124,7 +116,7 @@ MonoBehaviour:
   disableRenderingOnOverride: 1
   updateTiming: 1
   unscaledTime: 0
-  _animationName: 
+  _animationName: breath
   loop: 1
   timeScale: 1
 --- !u!114 &799003858441690247
@@ -199,3 +191,11 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 7.6252055, y: 5.649208}
   m_EdgeRadius: 0
+--- !u!33 &5651883658681479975
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3277547940177945073}
+  m_Mesh: {fileID: 0}

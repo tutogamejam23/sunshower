@@ -138,19 +138,6 @@
     - Command: AttackTarget
       Damage: 15
 
-- ID: 2004
-  Name: 소환요괴 일반 공격
-  Description: ""
-  Animation: Atack
-  Cooldown: 1.8
-  Commands:
-    - Command: GetTargetsInMobRange
-      Target: Enemy
-      TargetCount: 1
-
-    - Command: AttackTarget
-      Damage: 20
-
 # 퇴마사
 - ID: 3000
   Name: 멸 (滅)

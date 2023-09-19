@@ -1,0 +1,30 @@
+skeleton.png
+	size: 101, 37
+	filter: Linear, Linear
+	pma: true
+	scale: 0.5
+1
+	bounds: 38, 11, 24, 45
+	offsets: 34, 17, 100, 100
+	rotate: 90
+2
+	bounds: 85, 14, 14, 21
+	offsets: 31, 62, 100, 100
+3
+	bounds: 2, 2, 34, 33
+	offsets: 36, 50, 100, 100
+4
+	bounds: 38, 4, 5, 5
+	offsets: 49, 77, 100, 100
+5
+	bounds: 85, 6, 6, 6
+	offsets: 68, 43, 100, 100
+7
+	bounds: 45, 4, 4, 5
+	offsets: 63, 31, 100, 100
+8
+	bounds: 51, 5, 4, 4
+	offsets: 23, 45, 100, 100
+9
+	bounds: 57, 5, 4, 4
+	offsets: 29, 35, 100, 100

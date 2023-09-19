@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace Sunshower
@@ -16,6 +16,12 @@ namespace Sunshower
         private readonly Dictionary<int, EntityPool<Mob>> _mobPool = new();
         private readonly LinkedList<Mob> _activeFriendlyMobs = new();
         private readonly LinkedList<Mob> _activeEnemyMobs = new();
+        private Unity.Mathematics.Random _random;
+
+        private void Awake()
+        {
+            _random = new Unity.Mathematics.Random((uint)System.DateTime.Now.Ticks);
+        }
 
         private void Start()
         {
@@ -37,6 +43,11 @@ namespace Sunshower
                 EntitySideType.Enemy => _enemySpawnPoint.position,
                 _ => throw new System.NotImplementedException()
             };
+            var y = mob.transform.position.y;
+            y = _random.NextFloat(y - 0.3f, y + 0.3f);
+            mob.transform.position = new Vector3(mob.transform.position.x, y, mob.transform.position.z);
+
+            mob.HP = mob.Data.HP;
             mob.Direction = transform.localScale = side == EntitySideType.Friendly ? Vector3.right : Vector3.left;
             mob.EntitySide = side;
             switch (side)
