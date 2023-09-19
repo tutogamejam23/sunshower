@@ -145,12 +145,16 @@
   Animation: Myul
   Cooldown: 2
   Commands:
-    - Command: GetTargetsInMobRange
-      Target: Friendly
-      TargetCount: 1
-
-    - Command: AttackTarget
-      Damage: 50
+     - Command: ShotProjectile
+       Prefab: Yeoubul
+       Shot: Straight
+       Speed: 5
+       Count: 1
+       ShotDelay: 0
+       HitTarget: Friendly
+       HitCount: 1
+       OnHit:
+         Damage: 5
 
 - ID: 3001
   Name: 현 (顯)

@@ -10,6 +10,7 @@ namespace Sunshower
     public class Stage : StateMachine<Stage>
     {
         [SerializeField] private DataTableManager _dataTable;
+        [SerializeField] private ProjectileManager _projectileManager;
         [SerializeField] private PlayerSpawner _playerSpawner;
         [SerializeField] private MobSpawner _mobSpawner;
         [SerializeField, Min(1)] private int _stageNumber;
@@ -17,6 +18,9 @@ namespace Sunshower
         public static Stage Instance { get; private set; }
 
         public DataTableManager DataTable => _dataTable;
+
+        public ProjectileManager ProjectileManager => _projectileManager;
+
         public Player ActivePlayer => _playerSpawner.ActivePlayer;
         public PlayerSpawner PlayerSpawner => _playerSpawner;
         public MobSpawner MobSpawner => _mobSpawner;

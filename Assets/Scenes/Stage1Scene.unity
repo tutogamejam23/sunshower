@@ -6483,6 +6483,7 @@ GameObject:
   - component: {fileID: 1487737621}
   - component: {fileID: 1487737623}
   - component: {fileID: 1487737622}
+  - component: {fileID: 1487737624}
   m_Layer: 0
   m_Name: Stage Manager
   m_TagString: Untagged
@@ -6531,6 +6532,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LogEnabled: 0
   _dataTable: {fileID: 1487737620}
+  _projectileManager: {fileID: 0}
   _playerSpawner: {fileID: 1487737623}
   _mobSpawner: {fileID: 1487737622}
   _stageNumber: 1
@@ -6561,6 +6563,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _spawnPoint: {fileID: 92840931}
+--- !u!114 &1487737624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1487737617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75b208edf6b1c8c48b96fad23ae40cc7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1531490408
 GameObject:
   m_ObjectHideFlags: 0
