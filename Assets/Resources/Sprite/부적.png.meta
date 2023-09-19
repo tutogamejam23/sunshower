@@ -224,7 +224,12 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      "\uBD80\uC801_0": 4426589493904585401
+      "\uBD80\uC801_1": 5123366086772962877
+      "\uBD80\uC801_2": -2401076156478828925
+      "\uBD80\uC801_3": 1561698334193684654
+      "\uBD80\uC801_4": -6140433026401556825
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
