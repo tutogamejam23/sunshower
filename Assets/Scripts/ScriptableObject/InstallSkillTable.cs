@@ -6,16 +6,21 @@ namespace Sunshower
 {
     public class InstallSkillTable : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
+        [SerializeField] private List<InstallSkill> _installSkills = new();
 
-        // Update is called once per frame
-        void Update()
+        public Dictionary<string, InstallSkill> InstallSkills { get; private set; }
+
+        public void CreateTable()
         {
-        
+            InstallSkills = new Dictionary<string, InstallSkill>();
+            foreach (var installSkill in _installSkills)
+            {
+                if (installSkill == null)
+                {
+                    continue;
+                }
+                InstallSkills.TryAdd(installSkill.name, installSkill);
+            }
         }
     }
 }

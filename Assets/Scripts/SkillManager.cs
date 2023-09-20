@@ -165,16 +165,18 @@ namespace Sunshower
 
             if (IsCharming > 0)
             {
-                if (Owner is Mob mob && mob.Animation.SkeletonDataAsset.name != mob.CharmingSkin)
+                if (Owner is Mob mob && (mob.Animation.Skeleton.Skin?.Name ?? mob.DefaultSkin) != mob.CharmingSkin)
                 {
+                    mob.EntitySide = EntitySideType.Friendly;
                     mob.Animation.Skeleton.SetSkin(mob.CharmingSkin);
                     mob.Animation.Skeleton.ScaleX = -mob.Animation.Skeleton.ScaleX;
                 }
             }
             else
             {
-                if (Owner is Mob mob && mob.Animation.SkeletonDataAsset.name != mob.DefaultSkin)
+                if (Owner is Mob mob && (mob.Animation.Skeleton.Skin?.Name ?? mob.DefaultSkin) != mob.DefaultSkin)
                 {
+                    mob.EntitySide = EntitySideType.Enemy;
                     mob.Animation.Skeleton.SetSkin(mob.DefaultSkin);
                     mob.Animation.Skeleton.ScaleX = math.abs(mob.Animation.Skeleton.ScaleX);
                 }

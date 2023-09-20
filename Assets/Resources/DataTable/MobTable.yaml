@@ -60,8 +60,8 @@
   DeadAnimation: death
   MoveSFX: monster_walk
   DeadSFX: monster_die
-  HP: 10000
+  HP: 1000
   Speed: 7
-  Range: 7
+  Range: 12
   ResistCharming: True
   Skills: [3000, 3001, 3002]

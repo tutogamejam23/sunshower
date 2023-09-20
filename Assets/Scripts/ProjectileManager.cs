@@ -2,30 +2,42 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static Sunshower.SkillCommand;
-using UnityEngine.Pool;
 
 namespace Sunshower
 {
-    /// <summary>
-    /// 제가 병신이라 죄송합니다. (장기 기증 가능한)송종국 프로그래머 호소인 올림-
-    /// </summary>
+
     public class ProjectileManager : MonoBehaviour
     {
-        private readonly Dictionary<string, IObjectPool<Projectile>> _yeoubulPool;
-        private readonly Dictionary<string, IObjectPool<Projectile>> _amuletPool;
+        [SerializeField] private ProjectileTable _projectileTable;
 
-        /// <summary>
-        /// 여우구슬, 부적에 대한 Pool을 생성한다.
-        /// </summary>
-        /// <returns></returns>
+        private readonly Dictionary<string, BehaviourPool<Projectile>> _pools = new();
 
-        private void Start()
+        private void Awake()
         {
-            //#TODD : Yeoubul, Amulet을 Pool 생성한다.
+            Debug.Assert(_projectileTable);
+            _projectileTable.CreateTable();
         }
 
-        void OnGetFromPool(Projectile projectile) => projectile.gameObject.SetActive(true);
+        public Projectile Shot(string name, Vector3 position, Vector3 direction, float speed, EntitySideType target, int hitCount, HitSideEffect onHit)
+        {
+            if (!_pools.TryGetValue(name, out var pool))
+            {
+                pool = new BehaviourPool<Projectile>(_projectileTable.Projectiles[name]);
+                _pools.Add(name, pool);
+            }
 
-        void OnRealseToPool(Projectile projectile) => projectile.gameObject.SetActive(true);
+            var projectile = pool.Get();
+            projectile.Pool = pool;
+            projectile.transform.position = position;
+            projectile.Direction = direction;
+            projectile.Target = target;
+            projectile.Speed = speed;
+            projectile.OnHit = onHit;
+            projectile.HitCount = hitCount;
+
+            projectile.OnShot();
+
+            return projectile;
+        }
     }
 }

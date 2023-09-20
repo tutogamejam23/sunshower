@@ -120,12 +120,12 @@ namespace Sunshower
 
             var isCharming = owner.SkillManager.IsCharming > 0;
             var direction = isCharming ? owner.Direction * -1f : owner.Direction;
-            var side = isCharming ? owner.EntitySide : owner.EntitySide switch
+            var side = owner.EntitySide switch
             {
                 EntitySideType.Friendly => EntitySideType.Enemy,
                 EntitySideType.Enemy => EntitySideType.Friendly,
                 _ => throw new NotImplementedException()
-            };
+            }; // 매혹일 때는 스킬매니저에서 이미 처리함
             var nearestCount = Skill.GetNearestEntities(owner, direction, range, ref span, filter: side);
             // var nearestEntities = span[..nearestCount];
 
@@ -176,11 +176,11 @@ namespace Sunshower
 
             var isCharming = owner.SkillManager.IsCharming > 0;
             var direction = isCharming ? owner.Direction * -1f : owner.Direction;
-            var side = isCharming ? owner.EntitySide : owner.EntitySide switch
+            var side = owner.EntitySide switch
             {
                 EntitySideType.Friendly => EntitySideType.Enemy,
                 EntitySideType.Enemy => EntitySideType.Friendly,
-                _ => throw new System.NotImplementedException()
+                _ => throw new NotImplementedException()
             };
             var nearestCount = Skill.GetNearestEntities(owner, direction, range, ref span, filter: side);
             if (nearestCount == 0)

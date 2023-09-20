@@ -14,13 +14,19 @@ namespace Sunshower
 
     public class Projectile : MonoBehaviour
     {
+        [SerializeField] private string _shotSFX = string.Empty;
+        [SerializeField] private string _hitEffect = string.Empty;
+
+        public IObjectPool<Projectile> Pool { get; set; }
         public IGameEntity Owner { get; set; }
         public ShotType Shot { get; set; }
         public Vector3 Direction { get; set; }
-
-        public IObjectPool<Projectile> Pool { get; set; }
-
         public float Speed { get; set; }
+        public EntitySideType Target { get; set; }
+        public int HitCount { get; set; }
+
+        private int _hitCount;
+
         public SkillCommand.HitSideEffect OnHit { get; set; }
 
         private void Update()
@@ -30,15 +36,63 @@ namespace Sunshower
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (!collision.TryGetComponent(out IGameEntity entity) || entity != Owner)
+            if (!collision.TryGetComponent(out IGameEntity entity))
+            {
+                return;
+            }
+
+            if (entity == Owner || entity.EntitySide != Target || entity.HP == 0)
+            {
+                return;
+            }
+
+            if (_hitCount >= HitCount)
             {
                 return;
             }
             Hit(entity);
         }
 
+        public void OnShot()
+        {
+            _hitCount = 0;
+            if (_shotSFX != string.Empty)
+            {
+                SoundManager.instance.PlaySFXAtPosition(_shotSFX, transform.position);
+            }
+        }
+
         private void Hit(IGameEntity target)
         {
+            if (OnHit.Damage > 0)
+            {
+                target.HP -= OnHit.Damage;
+            }
+            if (OnHit.Buff != null)
+            {
+                switch (target)
+                {
+                    case Player player:
+                        player.SkillManager.AddBuff(OnHit.Buff);
+                        break;
+
+                    case Mob mob:
+                        mob.SkillManager.AddBuff(OnHit.Buff);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (_hitEffect != string.Empty)
+            {
+                //TODO : 이펙트 매니저에 이펙트 생성 요청
+            }
+
+            if (++_hitCount >= HitCount)
+            {
+                Pool.Release(this);
+            }
 
         }
 
@@ -47,7 +101,7 @@ namespace Sunshower
             switch (Type)
             {
                 case ShotType.Straight:
-                    transform.Translate(Speed * Time.deltaTime * Direction);
+                    transform.position += Speed * Time.deltaTime * Direction;
                     break;
 
                 case ShotType.Curve:
@@ -61,10 +115,8 @@ namespace Sunshower
                 default:
                     throw new System.NotImplementedException();
             }
+
+            // transform.rotation = Quaternion.Euler(Direction);
         }
-
-        public void SetPool(IObjectPool<Projectile> Pool) => this.Pool = Pool;
-
-        public void ReturnPool(IObjectPool<Projectile> Pool) => Pool.Release(this);
     }
 }

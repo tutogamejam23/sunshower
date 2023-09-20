@@ -47,6 +47,7 @@ namespace Sunshower
         public string Animation { get; set; }
         public string SFX { get; set; }
         public int Cost { get; set; }
+        public float Delay { get; set; }
         public float Cooldown { get; set; }
         public SkillCommandBase[] Commands { get; set; }
     }

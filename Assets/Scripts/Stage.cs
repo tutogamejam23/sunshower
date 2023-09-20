@@ -11,6 +11,8 @@ namespace Sunshower
     {
         [SerializeField] private DataTableManager _dataTable;
         [SerializeField] private ProjectileManager _projectileManager;
+        [SerializeField] private EffectManager _effectManager;
+
         [SerializeField] private PlayerSpawner _playerSpawner;
         [SerializeField] private MobSpawner _mobSpawner;
         [SerializeField, Min(1)] private int _stageNumber;
@@ -20,6 +22,7 @@ namespace Sunshower
         public DataTableManager DataTable => _dataTable;
 
         public ProjectileManager ProjectileManager => _projectileManager;
+        public EffectManager EffectManager => _effectManager;
 
         public Player ActivePlayer => _playerSpawner.ActivePlayer;
         public PlayerSpawner PlayerSpawner => _playerSpawner;
@@ -47,6 +50,8 @@ namespace Sunshower
         private void Start()
         {
             Debug.Assert(_dataTable, "DataTableManager 컴포넌트가 연결되어 있지 않습니다!");
+            Debug.Assert(_projectileManager, "ProjectileManager 컴포넌트가 연결되어 있지 않습니다!");
+            Debug.Assert(_effectManager, "EffectManager 컴포넌트가 연결되어 있지 않습니다!");
             Debug.Assert(_playerSpawner, "PlayerSpawner 컴포넌트가 연결되어 있지 않습니다!");
             Debug.Assert(_mobSpawner, "MobSpawner 컴포넌트가 연결되어 있지 않습니다!");
 

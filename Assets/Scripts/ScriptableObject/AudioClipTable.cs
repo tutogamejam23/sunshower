@@ -8,7 +8,7 @@ namespace Sunshower
     [CreateAssetMenu(fileName = "AudioClipTable", menuName = "ScriptableObjects/AudioClipTable", order = 1)]
     public class AudioClipTable : ScriptableObject
     {
-        [SerializeField] private List<AudioClip> audioClips;
+        [SerializeField] private List<AudioClip> audioClips = new();
 
         public Dictionary<string, AudioClip> AudioClips { get; private set; }
 

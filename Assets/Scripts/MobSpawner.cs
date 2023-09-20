@@ -33,7 +33,7 @@ namespace Sunshower
 
             _friendlyRandomSpawnPointY = new List<float>();
             _enemyRandomSpawnPointY = new List<float>();
-            for (var i = 1f; i >= 0f; i -= 0.2f)
+            for (var i = 1.2f; i >= 0f; i -= 0.3f)
             {
                 _friendlyRandomSpawnPointY.Add(_friendlySpawnPoint.position.y + i);
                 _enemyRandomSpawnPointY.Add(_enemySpawnPoint.position.y + i);
@@ -53,8 +53,10 @@ namespace Sunshower
             {
                 case EntitySideType.Friendly:
                     {
-                        var idx = _random.NextInt(0, _friendlyRandomSpawnPointY.Count);
+                        var idx = _random.NextInt(0, _friendlyRandomSpawnPointY.Count * 100);
+                        idx = math.min((int)math.round((float)idx / 100), _friendlyRandomSpawnPointY.Count - 1);
                         var y = _friendlyRandomSpawnPointY[idx];
+
                         mob.transform.position = new Vector3(_friendlySpawnPoint.position.x, y, _friendlySpawnPoint.position.z);
                         mob.transform.GetComponent<MeshRenderer>().sortingOrder = idx;
                         break;
@@ -63,8 +65,10 @@ namespace Sunshower
 
                 case EntitySideType.Enemy:
                     {
-                        var idx = _random.NextInt(0, _enemyRandomSpawnPointY.Count);
+                        var idx = _random.NextInt(0, _enemyRandomSpawnPointY.Count * 100);
+                        idx = math.min((int)math.round((float)idx / 100), _enemyRandomSpawnPointY.Count - 1);
                         var y = _enemyRandomSpawnPointY[idx];
+
                         mob.transform.position = new Vector3(_enemySpawnPoint.position.x, y, _enemySpawnPoint.position.z);
                         mob.transform.GetComponent<MeshRenderer>().sortingOrder = idx;
                         break;

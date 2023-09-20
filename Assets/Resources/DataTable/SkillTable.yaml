@@ -9,20 +9,18 @@
   Animation: skill
   SFX: fox_fire
   Cost: 2
-  Cooldown: 1
+  Cooldown: 3
   Commands:
     - Command: ShotProjectile
       Prefab: Yeoubul
       Shot: Straight
-      Speed: 5
+      Speed: 10
       Count: 5
-      ShotDelay: 0.5
+      ShotDelay: 0.25
       HitTarget: Enemy
       HitCount: 1
       OnHit:
         Damage: 5
-        Buff:
-          SpeedRate: 0.3
 
 - ID: 1001
   Name: 캥!
@@ -32,6 +30,7 @@
   Animation: skill
   SFX: fox_kaeng
   Cost: 4
+  Cooldown: 3
   Commands:
     - Command: SpawnRandomMobs
       Queue:
@@ -48,9 +47,10 @@
   Animation: skill
   SFX: fox_bead
   Cost: 8
+  Cooldown: 5
   Commands:
     - Command: InstallSkillToPosition
-      Prefab: Yeouguseul
+      Prefab: Yeougusul
       Duration: 0 # 안사라짐
       HitTarget: Enemy
       HitCount: 1
@@ -68,16 +68,17 @@
   Animation: foxrain
   SFX: fox_kaeng
   Cost: 10
+  Cooldown: 15
   Commands:
     - Command: PlayAreaEffect
-      Effect: Yeoubi
+      Effect: Rain
       SFX: fox_rain
-      Duration: 5
+      Duration: 10
 
     - Command: BuffToAll
       Target: Friendly
       Buff:
-        Duration: 5
+        Duration: 10
         DotInterval: 0.5
         DotHeal: 50
         SpeedRate: 1.3
@@ -85,10 +86,10 @@
     - Command: BuffToAll
       Target: Enemy
       Buff:
-        Duration: 5
-        DotInterval: 0.5
+        Duration: 10
+        DotInterval: 0.8
         DotDamage: 6
-        SpeedRate: 0.6
+        SpeedRate: 0.3
 
 # 일반 몹
 - ID: 2000
@@ -96,7 +97,7 @@
   Description: ""
   Animation: attack
   SFX: monster_axe
-  Cooldown: 1
+  Delay: 1
   Commands:
     - Command: GetTargetsInMobRange
       Target: Friendly
@@ -110,7 +111,7 @@
   Description: ""
   Animation: Walk&Attack
   SFX: monster_gun
-  Cooldown: 1.3
+  Delay: 1.3
   Commands:
     - Command: GetTargetsInMobRange
       Target: Friendly
@@ -124,7 +125,7 @@
   SFX: gorani_attack
   Description: ""
   Animation: attack
-  Cooldown: 1
+  Delay: 1
   Commands:
     - Command: GetTargetsInMobRange
       Target: Enemy
@@ -138,7 +139,7 @@
   Description: ""
   Animation: Attack
   SFX: tiger_attack
-  Cooldown: 1.2
+  Delay: 1.2
   Commands:
     - Command: GetTargetsInMobRange
       Target: Enemy
@@ -153,12 +154,13 @@
   Description: 전방으로 부적을 던져 피해를 입힌다.
   Animation: skill1
   SFX: boss_1
+  Delay: 2
   Cooldown: 2
   Commands:
     - Command: ShotProjectile
-      Prefab: Yeoubul
+      Prefab: Amulet
       Shot: Straight
-      Speed: 5
+      Speed: 20
       Count: 1
       ShotDelay: 0
       HitTarget: Friendly
@@ -171,6 +173,7 @@
   Description: 사냥꾼들을 부른다.
   Animation: skill2
   SFX: boss_2
+  Delay: 3
   Cooldown: 20
   Commands:
     - Command: SpawnRandomMobs
@@ -184,6 +187,7 @@
   Description: 전방의 적에게 즉사에 가까운 대미지를 준다.
   Animation: skill1
   SFX: boss_3
+  Delay: 3
   Cooldown: 15
   Commands:
     - Command: GetTargetsInMobRange
@@ -194,4 +198,4 @@
       Damage: 100
 
     - Command: PlayEffectToTarget
-      Effect: Bong
+      Effect: Skull

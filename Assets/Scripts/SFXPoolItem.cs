@@ -13,7 +13,7 @@ namespace Sunshower
         public AudioSource Source { get; private set; }
         public bool IsInitialized { get; private set; }
 
-        private void Start()
+        private void Awake()
         {
             Source = gameObject.GetComponent<AudioSource>();
             Debug.Assert(Source);
@@ -47,10 +47,11 @@ namespace Sunshower
 
         public void Play(AudioClip clip)
         {
+            var source = gameObject.GetComponent<AudioSource>();
             transform.SetParent(Camera.main.transform);
-            Source.clip = clip;
-            Source.loop = false;
-            Source.Play();
+            source.clip = clip;
+            source.loop = false;
+            source.Play();
 
             IsInitialized = true;
         }

@@ -4,18 +4,24 @@ using UnityEngine;
 
 namespace Sunshower
 {
-    public class EffectTable : MonoBehaviour
+    [CreateAssetMenu(fileName = "EffectTable", menuName = "ScriptableObjects/EffectTable")]
+    public class EffectTable : ScriptableObject
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
+        [SerializeField] private List<Effect> _effects = new();
 
-        // Update is called once per frame
-        void Update()
+        public Dictionary<string, Effect> Effects { get; private set; }
+
+        public void CreateTable()
         {
-        
+            Effects = new Dictionary<string, Effect>();
+            foreach (var effect in _effects)
+            {
+                if (effect == null)
+                {
+                    continue;
+                }
+                Effects.TryAdd(effect.name, effect);
+            }
         }
     }
 }

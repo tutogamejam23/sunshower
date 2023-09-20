@@ -15,9 +15,6 @@ namespace Sunshower
     {
         public AudioClipTable SFXTable;
         public SFXPoolItem SFXPoolItem;
-        public AudioMixer mixer;
-        public AudioSource Bgm;
-        public AudioClip[] BgmList;
 
         public static SoundManager instance;
 
@@ -53,7 +50,7 @@ namespace Sunshower
 
         public bool PlaySFX(string sfxName)
         {
-            if (SFXTable.AudioClips.TryGetValue(sfxName, out var clip))
+            if (!SFXTable.AudioClips.TryGetValue(sfxName, out var clip))
             {
                 return false;
             }
