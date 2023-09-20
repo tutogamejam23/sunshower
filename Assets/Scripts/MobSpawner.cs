@@ -12,6 +12,11 @@ namespace Sunshower
 
         private List<float> _friendlyRandomSpawnPointY;
         private List<float> _enemyRandomSpawnPointY;
+        private int[] _friendlySortingOrder;
+        private int[] _enemySortingOrder;
+
+        public Vector3 FriendlySpawnPosition => _friendlySpawnPoint.position;
+        public Vector3 EnemySpawnPosition => _enemySpawnPoint.position;
 
         public IReadOnlyCollection<Mob> ActiveFriendlyMobs => _activeFriendlyMobs;
         public IReadOnlyCollection<Mob> ActiveEnemyMobs => _activeEnemyMobs;
@@ -33,11 +38,13 @@ namespace Sunshower
 
             _friendlyRandomSpawnPointY = new List<float>();
             _enemyRandomSpawnPointY = new List<float>();
-            for (var i = 1.2f; i >= 0f; i -= 0.3f)
+            for (var i = 2f; i >= 0f; i -= 0.4f)
             {
                 _friendlyRandomSpawnPointY.Add(_friendlySpawnPoint.position.y + i);
                 _enemyRandomSpawnPointY.Add(_enemySpawnPoint.position.y + i);
             }
+            _friendlySortingOrder = new int[_friendlyRandomSpawnPointY.Count];
+            _enemySortingOrder = new int[_enemyRandomSpawnPointY.Count];
 
             foreach (var (id, mobData) in Stage.Instance.DataTable.MobTable)
             {
@@ -58,7 +65,14 @@ namespace Sunshower
                         var y = _friendlyRandomSpawnPointY[idx];
 
                         mob.transform.position = new Vector3(_friendlySpawnPoint.position.x, y, _friendlySpawnPoint.position.z);
-                        mob.transform.GetComponent<MeshRenderer>().sortingOrder = idx;
+
+                        int order = idx * 50 + _friendlySortingOrder[idx]++;
+                        if (_friendlySortingOrder[idx] >= 50)
+                        {
+                            _friendlySortingOrder[idx] = 0;
+                        }
+                        mob.Animation.GetComponent<MeshRenderer>().sortingOrder = order;
+                        // Debug.Log($"y={y}, idx={idx}");
                         break;
                     }
 
@@ -70,7 +84,13 @@ namespace Sunshower
                         var y = _enemyRandomSpawnPointY[idx];
 
                         mob.transform.position = new Vector3(_enemySpawnPoint.position.x, y, _enemySpawnPoint.position.z);
-                        mob.transform.GetComponent<MeshRenderer>().sortingOrder = idx;
+
+                        int order = idx * 50 + _enemySortingOrder[idx]++;
+                        if (_enemySortingOrder[idx] >= 50)
+                        {
+                            _enemySortingOrder[idx] = 0;
+                        }
+                        mob.Animation.GetComponent<MeshRenderer>().sortingOrder = order;
                         break;
                     }
 
@@ -78,7 +98,6 @@ namespace Sunshower
                     throw new System.NotImplementedException();
             }
 
-            // mob.HP = mob.Data.HP;
             mob.Direction = transform.localScale = side == EntitySideType.Friendly ? Vector3.right : Vector3.left;
 
             mob.EntitySide = side;
@@ -94,6 +113,7 @@ namespace Sunshower
                     throw new System.NotImplementedException();
             }
             mob.OnActive();
+            Stage.Instance.EffectManager.Play("MobSpawn", mob.transform.position);
         }
 
         public void OnReleaseFromPool(Mob mob)

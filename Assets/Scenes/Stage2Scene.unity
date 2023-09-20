@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000002, guid: 9944419eb62f19d43b06587547184879, type: 2}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 9372f71e611aab34bbc043474aaf6ba1, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: bbfb7e740999a164d86aa18ed214deaf, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -148,7 +148,7 @@ Transform:
   m_GameObject: {fileID: 12552473}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -22, y: -5, z: 0}
+  m_LocalPosition: {x: -22, y: -6.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -210,7 +210,7 @@ Transform:
   m_GameObject: {fileID: 92840929}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -15, y: -4, z: 0}
+  m_LocalPosition: {x: -10, y: -7.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -845,7 +845,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 000000001fb56e21095e1204
+  m_ApplyToSortingLayers: 00000000095e12041fb56e215995a116
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -1417,7 +1417,7 @@ Transform:
   m_GameObject: {fileID: 1165397005}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 55, y: -5, z: 0}
+  m_LocalPosition: {x: 48.4, y: -6.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1790,6 +1790,7 @@ MonoBehaviour:
   _mobSpawner: {fileID: 1487737622}
   _stageNumber: 2
   _nextStageNumber: 0
+  _mapEndX: 45.5
 --- !u!114 &1487737622
 MonoBehaviour:
   m_ObjectHideFlags: 0

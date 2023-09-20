@@ -17,6 +17,7 @@ namespace Sunshower
         [SerializeField] private MobSpawner _mobSpawner;
         [SerializeField, Min(1)] private int _stageNumber;
         [SerializeField] private int _nextStageNumber = 0;
+        [SerializeField] private float _mapEndX;
 
         public static Stage Instance { get; private set; }
 
@@ -31,6 +32,7 @@ namespace Sunshower
 
         public int StageNumber => _stageNumber;
         public int NextStageNumber => _nextStageNumber;
+        public float MapEndX => _mapEndX;
 
         public StageData StageInformation { get; private set; }
         public StageBeginState BeginState { get; private set; }
