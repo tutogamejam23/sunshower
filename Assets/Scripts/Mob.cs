@@ -2,12 +2,17 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Text;
+
 using DG.Tweening;
+
 using Spine;
 using Spine.Unity;
+
 using Unity.Mathematics;
+
 using UnityEngine;
 using UnityEngine.Pool;
+
 using YamlDotNet.Core.Events;
 
 namespace Sunshower
@@ -98,6 +103,7 @@ namespace Sunshower
         public void OnActive()
         {
             _hp = Data.HP;
+            SkillManager.Clear();
             ChangeState(MobMoveState);
         }
 

@@ -214,9 +214,9 @@ namespace Sunshower
                     SceneManager.LoadSceneAsync("EndDialougeScene");
                 }
             }
-            else
+            else if (IsEnemyWin)
             {
-                // SceneManager.LoadSceneAsync("TitleScene");
+                SceneManager.LoadSceneAsync("TitleScene");
             }
         }
 

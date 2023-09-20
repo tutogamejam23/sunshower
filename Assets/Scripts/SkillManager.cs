@@ -138,6 +138,12 @@ namespace Sunshower
             newBuff.OnAdd();
         }
 
+        public void Clear()
+        {
+            _buffs.Clear();
+            IsCharming = 0;
+        }
+
         private void Update()
         {
             var deltaTime = Time.deltaTime;

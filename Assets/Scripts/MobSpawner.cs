@@ -118,16 +118,9 @@ namespace Sunshower
 
         public void OnReleaseFromPool(Mob mob)
         {
-            switch (mob.EntitySide)
+            if (!_activeFriendlyMobs.Remove(mob) && !_activeEnemyMobs.Remove(mob))
             {
-                case EntitySideType.Friendly:
-                    _activeFriendlyMobs.Remove(mob);
-                    break;
-                case EntitySideType.Enemy:
-                    _activeEnemyMobs.Remove(mob);
-                    break;
-                default:
-                    throw new System.NotImplementedException();
+                Debug.LogError("몹 풀에 해당 몹 인스턴스가 없습니다!");
             }
         }
     }
