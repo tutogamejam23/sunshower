@@ -161,7 +161,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.046914816, y: 0.8745047}
+  m_Offset: {x: -0.046914816, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -171,7 +171,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.253717, y: 5.510932}
+  m_Size: {x: 4.253717, y: 30}
   m_EdgeRadius: 0
 --- !u!114 &8425651051458308763
 MonoBehaviour:
@@ -188,6 +188,8 @@ MonoBehaviour:
   LogEnabled: 0
   <SkillManager>k__BackingField: {fileID: 8815255248897786523}
   <Animation>k__BackingField: {fileID: 7797976877312359075}
+  <DefaultSkin>k__BackingField: skin1
+  <CharmingSkin>k__BackingField: skin2
 --- !u!114 &8815255248897786523
 MonoBehaviour:
   m_ObjectHideFlags: 0

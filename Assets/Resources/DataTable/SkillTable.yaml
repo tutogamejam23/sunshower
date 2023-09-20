@@ -86,8 +86,8 @@
       Target: Enemy
       Buff:
         Duration: 5
-        DotInterval: 1.5
-        DotDamage: 1
+        DotInterval: 0.5
+        DotDamage: 6
         SpeedRate: 0.6
 
 # 일반 몹
@@ -136,7 +136,7 @@
 - ID: 2003
   Name: 호랑이 일반 공격
   Description: ""
-  Animation: Atack
+  Animation: Attack
   SFX: tiger_attack
   Cooldown: 1.2
   Commands:
@@ -155,16 +155,16 @@
   SFX: boss_1
   Cooldown: 2
   Commands:
-     - Command: ShotProjectile
-       Prefab: Yeoubul
-       Shot: Straight
-       Speed: 5
-       Count: 1
-       ShotDelay: 0
-       HitTarget: Friendly
-       HitCount: 1
-       OnHit:
-         Damage: 5
+    - Command: ShotProjectile
+      Prefab: Yeoubul
+      Shot: Straight
+      Speed: 5
+      Count: 1
+      ShotDelay: 0
+      HitTarget: Friendly
+      HitCount: 1
+      OnHit:
+        Damage: 5
 
 - ID: 3001
   Name: 현 (顯)

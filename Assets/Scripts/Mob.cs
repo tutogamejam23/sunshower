@@ -19,6 +19,12 @@ namespace Sunshower
         [field: SerializeField]
         public SkeletonAnimation Animation { get; private set; }
 
+        [field: SerializeField, SpineSkin]
+        public string DefaultSkin { get; private set; }
+
+        [field: SerializeField, SpineSkin]
+        public string CharmingSkin { get; private set; }
+
         public MobMoveState MobMoveState { get; private set; }
         public MobAttackState MobAttackState { get; private set; }
         public MobDeadState MobDeadState { get; private set; }
@@ -75,6 +81,7 @@ namespace Sunshower
 
         public void OnActive()
         {
+            _hp = Data.HP;
             ChangeState(MobMoveState);
         }
 

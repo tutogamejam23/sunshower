@@ -20,8 +20,8 @@ namespace Sunshower
         [SerializeField] private TMP_Text costText;
 
         private static readonly int YeobulID = 1000;
-        private static readonly int YeougusulID = 1001;
-        private static readonly int KaengID = 1002;
+        private static readonly int KaengID = 1001;
+        private static readonly int YeougusulID = 1002;
         private static readonly int YeoubiID = 1003;
 
         private readonly Dictionary<int, Skill> _skills = new();
@@ -62,10 +62,10 @@ namespace Sunshower
             var player = Stage.Instance.ActivePlayer;
             var interactable = player != null && player.CurrentState == player.PlayerIdleState;
 
-            yeoubul.interactable = interactable;
-            yeougusul.interactable = interactable;
-            kaeng.interactable = interactable;
-            yeoubi.interactable = interactable;
+            yeoubul.interactable = interactable && _skills[YeobulID].CanUse();
+            yeougusul.interactable = interactable && _skills[YeougusulID].CanUse();
+            kaeng.interactable = interactable && _skills[KaengID].CanUse();
+            yeoubi.interactable = interactable && _skills[YeoubiID].CanUse();
         }
 
         private void TargetingGround()
@@ -77,11 +77,13 @@ namespace Sunshower
             else if (Input.GetMouseButtonDown(0))
             {
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out var hit, 100f, LayerMask.GetMask("Ground")))
+                var hit = Physics2D.Raycast(ray.origin, ray.direction, 100f, LayerMask.GetMask("Ground"));
+                if (hit)
                 {
                     var skill = _skills[YeougusulID];
                     skill.Manager.UsePosition = new Vector3(hit.point.x, Stage.Instance.ActivePlayer.transform.position.y, 0);
                     _targetingGround = false;
+                    Stage.Instance.ActivePlayer.ExecuteSkill(YeougusulID);
                 }
                 else
                 {

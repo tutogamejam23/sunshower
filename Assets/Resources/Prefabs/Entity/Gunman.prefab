@@ -52,6 +52,8 @@ MonoBehaviour:
   LogEnabled: 0
   <SkillManager>k__BackingField: {fileID: -8690774728652490976}
   <Animation>k__BackingField: {fileID: 5903006283382704108}
+  <DefaultSkin>k__BackingField: Skin1
+  <CharmingSkin>k__BackingField: Skin2
 --- !u!114 &-8690774728652490976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,7 +100,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.24979854, y: 2.827848}
+  m_Offset: {x: 0.24979854, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -108,7 +110,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 4.2234607, y: 5.6271944}
+  m_Size: {x: 4.2234607, y: 30}
   m_EdgeRadius: 0
 --- !u!23 &1725637155931266020
 MeshRenderer:

@@ -13,7 +13,7 @@
   MoveSFX: animal_walk
   DeadSFX: gorani_die
   HP: 30
-  Speed: 10
+  Speed: 20
   Range: 3
   Skills: [2002]
 
@@ -63,4 +63,5 @@
   HP: 10000
   Speed: 7
   Range: 7
+  ResistCharming: True
   Skills: [3000, 3001, 3002]

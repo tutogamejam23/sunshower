@@ -150,8 +150,8 @@ namespace Sunshower
             }
 
             // InstallSkill class
-            var prefab = Resources.Load<GameObject>(installSkillToPosition.Prefab);
-            UnityEngine.Object.Instantiate(prefab, usePosition, quaternion.identity);
+            // var prefab = Resources.Load<GameObject>(installSkillToPosition.Prefab);
+            // UnityEngine.Object.Instantiate(prefab, usePosition, quaternion.identity);
         }
 
         private bool GetTargetsInMobRange(SkillCommand.GetTargetsInMobRange getTargetsInMobRange, ref Span<IGameEntity> targets)

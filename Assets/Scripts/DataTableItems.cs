@@ -36,6 +36,7 @@ namespace Sunshower
         public string MoveSFX { get; set; }
         public string DeadSFX { get; set; }
         public float Range { get; set; }
+        public bool ResistCharming { get; set; }
     }
 
     public class SkillData : IDataTableItem
