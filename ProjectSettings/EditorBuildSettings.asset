@@ -15,7 +15,10 @@ EditorBuildSettings:
     path: Assets/Scenes/StageUIScene.unity
     guid: bc188c828ad717b44986443e30549101
   - enabled: 1
-    path: Assets/Scenes/DialougeScene.unity
+    path: Assets/Scenes/StartDialogueScene.unity
+    guid: 0416c181d9e9f224094e1d7c0ce4f3bf
+  - enabled: 1
+    path: Assets/Scenes/EndDialogueScene.unity
     guid: 125ed6dca7f31b34d8865b569fa163c0
   - enabled: 1
     path: Assets/Scenes/Stage1Scene.unity
