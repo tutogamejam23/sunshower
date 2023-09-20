@@ -29,7 +29,7 @@ public class UITitleView : UIView
     {
         fadeImg.DOFade(1f, 0.5f).OnComplete(() =>
         {
-            SceneManager.LoadSceneAsync("Stage1Scene");
+            SceneManager.LoadSceneAsync("StartDialogueScene");
         });
 
     }
