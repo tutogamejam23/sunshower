@@ -29,7 +29,7 @@
     소환된 동물을 적을 공격한다.
   Animation: skill
   SFX: fox_kaeng
-  Cost: 2
+  Cost: 5
   Cooldown: 1
   Commands:
     - Command: SpawnRandomMobs
@@ -132,7 +132,7 @@
       TargetCount: 1
 
     - Command: AttackTarget
-      Damage: 5
+      Damage: 10
 
 - ID: 2003
   Name: 호랑이 일반 공격
@@ -146,7 +146,7 @@
       TargetCount: 1
 
     - Command: AttackTarget
-      Damage: 15
+      Damage: 20
 
 # 퇴마사
 - ID: 3000
@@ -178,8 +178,8 @@
   Commands:
     - Command: SpawnRandomMobs
       Queue:
-        - [200, 200, 200, 201, 201]
-        - [201, 201, 201]
+        - [201, 200, 200, 200, 201]
+        - [200, 201, 201]
       SpawnDelay: 2
 
 - ID: 3002
@@ -195,7 +195,7 @@
       TargetCount: 1
 
     - Command: AttackTarget
-      Damage: 100
+      Damage: 200
 
     - Command: PlayEffectToTarget
       Effect: Skull
