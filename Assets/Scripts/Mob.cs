@@ -40,8 +40,7 @@ namespace Sunshower
 
         public int ID => Data.ID;
 
-
-        private Tween _hitTween;
+        // private Tween _hitTween;
         public int HP
         {
             get => _hp;
@@ -60,11 +59,11 @@ namespace Sunshower
 
                 if (diff < 0)
                 {
-                    if (_hitTween != null && _hitTween.IsPlaying())
-                    {
-                        _hitTween.Complete();
-                    }
-                    _hitTween = transform.DOPunchPosition(Direction * 0.1f, 0.2f);
+                    //if (_hitTween != null && _hitTween.IsPlaying())
+                    //{
+                    //    _hitTween.Complete();
+                    //}
+                    //_hitTween = transform.DOMoveX(transform.position.x + (nockback * -Direction.x), 0.2f);
                 }
 
                 if (_hp == 0)
@@ -84,6 +83,8 @@ namespace Sunshower
             MobMoveState = new MobMoveState();
             MobAttackState = new MobAttackState();
             MobDeadState = new MobDeadState();
+
+            // _random = new Unity.Mathematics.Random((uint)System.DateTime.Now.Ticks);
         }
 
         private void OnEnable()
@@ -111,7 +112,6 @@ namespace Sunshower
     public class MobMoveState : IState<Mob>
     {
         private ArrayPool<IGameEntity> _entityPool;
-        private Mob _owner;
 
         public void Initialize()
         {
@@ -120,7 +120,6 @@ namespace Sunshower
         public void Enter(Mob owner)
         {
             _entityPool = new ArrayPool<IGameEntity>(30);
-            _owner = owner;
 
             // Move animation
             var entry = owner.Animation.AnimationState.SetAnimation(0, owner.MobData.MoveAnimation, true);
@@ -154,6 +153,15 @@ namespace Sunshower
 
             // 매혹에 걸린 경우 반대 방향으로 이동
 
+            if (owner.EntitySide == EntitySideType.Friendly && owner.transform.position.x >= Stage.Instance.MapEndX)
+            {
+                return;
+            }
+
+            if (Stage.Instance.CurrentState == Stage.Instance.EndState)
+            {
+                return;
+            }
             var speedRate = owner.SkillManager.SpeedRateBuffAverage;
             owner.transform.position += 0.1f * owner.Data.Speed * speedRate * Time.deltaTime * direction;
         }

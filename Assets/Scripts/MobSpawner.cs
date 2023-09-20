@@ -15,6 +15,9 @@ namespace Sunshower
         private int[] _friendlySortingOrder;
         private int[] _enemySortingOrder;
 
+        public Vector3 FriendlySpawnPosition => _friendlySpawnPoint.position;
+        public Vector3 EnemySpawnPosition => _enemySpawnPoint.position;
+
         public IReadOnlyCollection<Mob> ActiveFriendlyMobs => _activeFriendlyMobs;
         public IReadOnlyCollection<Mob> ActiveEnemyMobs => _activeEnemyMobs;
 
@@ -110,6 +113,7 @@ namespace Sunshower
                     throw new System.NotImplementedException();
             }
             mob.OnActive();
+            Stage.Instance.EffectManager.Play("MobSpawn", mob.transform.position);
         }
 
         public void OnReleaseFromPool(Mob mob)

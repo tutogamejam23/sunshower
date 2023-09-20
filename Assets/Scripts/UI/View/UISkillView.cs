@@ -83,7 +83,7 @@ namespace Sunshower
                 if (hit)
                 {
                     var skill = _skills[YeougusulID];
-                    skill.Manager.UsePosition = new Vector3(hit.point.x, Stage.Instance.ActivePlayer.transform.position.y, 0);
+                    skill.Manager.UsePosition = new Vector3(hit.point.x, Stage.Instance.MobSpawner.EnemySpawnPosition.y + 1.5f, 0);
                     _targetingGround = false;
                     Stage.Instance.ActivePlayer.ExecuteSkill(YeougusulID);
                 }
