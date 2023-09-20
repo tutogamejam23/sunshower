@@ -28,7 +28,7 @@ public class UIDialouageView : UIView
         yield return new WaitForSeconds(28f);
 
         // SceneManager.LoadScene("UIScene");
-        SceneManager.LoadScene("Stage1Scene", LoadSceneMode.Single);
+        SceneManager.LoadScene("TitleScene", LoadSceneMode.Single);
     }
 
     public override void HidePanel()

@@ -32,6 +32,7 @@ namespace Sunshower
             ActivePlayer = player;
             player.HP = data.HP;
             player.Direction = Vector3.right;
+            player.OnActive();
             OnPlayerSpawned?.Invoke(this, player);
         }
     }

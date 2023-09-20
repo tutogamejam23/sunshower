@@ -8,15 +8,23 @@
 - ID: 100
   Name: 고라니
   PrefabPath: Entity/Gorani
-  HP: 30
-  Speed: 10
+  MoveAnimation: run
+  DeadAnimation: death
+  MoveSFX: animal_walk
+  DeadSFX: gorani_die
+  HP: 70
+  Speed: 30
   Range: 3
   Skills: [2002]
 
 - ID: 101
   Name: 호랑이
   PrefabPath: Entity/Tiger
-  HP: 50
+  MoveAnimation: WALK
+  DeadAnimation: Die
+  MoveSFX: animal_walk
+  DeadSFX: tiger_die
+  HP: 130
   Speed: 15
   Range: 3
   Skills: [2003]
@@ -24,7 +32,11 @@
 - ID: 200
   Name: 정찰병
   PrefabPath: Entity/Scout
-  HP: 100
+  MoveAnimation: walk
+  DeadAnimation: die
+  MoveSFX: monster_walk
+  DeadSFX: monster_die
+  HP: 90
   Speed: 15
   Range: 3
   Skills: [2000]
@@ -32,7 +44,11 @@
 - ID: 201
   Name: 총잡이
   PrefabPath: Entity/Gunman
-  HP: 200
+  MoveAnimation: Walk&Attack
+  DeadAnimation: Die
+  MoveSFX: monster_walk
+  DeadSFX: monster_die
+  HP: 180
   Speed: 10
   Range: 10
   Skills: [2001]
@@ -40,7 +56,12 @@
 - ID: 202
   Name: 퇴마사
   PrefabPath: Entity/Exorcist
-  HP: 10000
+  MoveAnimation: walk
+  DeadAnimation: death
+  MoveSFX: monster_walk
+  DeadSFX: monster_die
+  HP: 1000
   Speed: 7
-  Range: 7
+  Range: 12
+  ResistCharming: True
   Skills: [3000, 3001, 3002]

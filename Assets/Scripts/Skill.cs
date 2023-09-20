@@ -36,6 +36,14 @@ namespace Sunshower
 
         public bool CanUse()
         {
+            if (Stage.Instance.CurrentState != Stage.Instance.RunningState)
+            {
+                return false;
+            }
+            if (Owner.HP == 0)
+            {
+                return false;
+            }
             if (Manager.Delay > 0f)
             {
                 return false;
@@ -112,10 +120,11 @@ namespace Sunshower
             }
 
             // Set animation
-            // var animation = Owner.Transform.GetComponent<SkeletonAnimation>();
-            // var entry = animation.state.SetAnimation(0, Info.Animation, false);
-            // Manager.Delay = entry.AnimationTime;
-            Manager.Delay = 1f;
+            var animation = Owner.Transform.GetComponent<SkeletonAnimation>();
+            var entry = animation.state.SetAnimation(0, Info.Animation, false);
+            Manager.Delay = Info.Delay > 0f ? Info.Delay : entry.AnimationEnd;
+
+            SoundManager.instance.PlaySFXAtPosition(Info.SFX, Owner.Transform.position);
 
             Manager.UsePosition = Vector3.zero;
             Cooldown = Info.Cooldown;
@@ -139,6 +148,10 @@ namespace Sunshower
 
         private void PlayEffectToTarget(SkillCommand.PlayEffectToTarget playEffectToTarget, in Span<IGameEntity> targets)
         {
+            foreach (var target in targets)
+            {
+                Stage.Instance.EffectManager.Play(playEffectToTarget.Effect, target.Transform.position);
+            }
         }
 
         private void InstallSkillToPosition(SkillCommand.InstallSkillToPosition installSkillToPosition, Vector3 usePosition)
@@ -148,9 +161,9 @@ namespace Sunshower
                 return;
             }
 
-            // InstallSkill class
-            var prefab = Resources.Load<GameObject>(installSkillToPosition.Prefab);
-            UnityEngine.Object.Instantiate(prefab, usePosition, quaternion.identity);
+            Stage.Instance.ProjectileManager.Shot(
+                installSkillToPosition.Prefab, usePosition, Vector3.zero, 0,
+                installSkillToPosition.HitTarget, installSkillToPosition.HitCount, installSkillToPosition.OnHit);
         }
 
         private bool GetTargetsInMobRange(SkillCommand.GetTargetsInMobRange getTargetsInMobRange, ref Span<IGameEntity> targets)
@@ -209,28 +222,28 @@ namespace Sunshower
 
         private void ShotProjectile(SkillCommand.ShotProjectile shotProjectile)
         {
-            // TODO: 미리 캐싱
-            var prefab = Resources.Load<GameObject>(shotProjectile.Prefab);
-            Stage.Instance.StartCoroutine(ShotProjectile(prefab, shotProjectile));
+            Stage.Instance.StartCoroutine(ShotProjectileWithDelay(shotProjectile));
         }
 
-        private IEnumerator ShotProjectile(GameObject prefab, SkillCommand.ShotProjectile info)
+        private IEnumerator ShotProjectileWithDelay(SkillCommand.ShotProjectile info)
         {
             var wait = new WaitForSeconds(info.ShotDelay);
             for (int i = 0; i < info.Count; i++)
             {
-                // var projectile = UnityEngine.Object.Instantiate(prefab, Owner.Transform.position, quaternion.identity);
-                // var projectileComponent = projectile.GetComponent<Projectile>();
-                // projectileComponent.Speed = info.Speed;
-                // projectileComponent.HitTarget = info.HitTarget;
-                // projectileComponent.Owner = Owner;
+                var position = Owner.Transform.position;
+                position.y = UnityEngine.Random.Range(position.y - 1f, position.y + 1f);
+
+                Stage.Instance.ProjectileManager.Shot(
+                    info.Prefab, position, Owner.Direction, info.Speed, info.HitTarget, info.HitCount, info.OnHit);
+
                 yield return wait;
             }
         }
 
         private void PlayAreaEffect(SkillCommand.PlayAreaEffect playAreaEffect)
         {
-            // TODO: 이펙트 재생
+            Stage.Instance.EffectManager.Play(playAreaEffect.Effect, Vector3.zero);
+            SoundManager.instance.PlaySFX(playAreaEffect.SFX);
         }
 
         private void BuffToAll(SkillCommand.BuffToAll buffToAll)
@@ -273,6 +286,10 @@ namespace Sunshower
                 var hit = hits[i];
                 if (hit.transform != target.Transform && hit.collider.TryGetComponent(out IGameEntity entity))
                 {
+                    if (entity.HP == 0)
+                    {
+                        continue;
+                    }
                     if (filter != EntitySideType.None && entity.EntitySide != filter)
                     {
                         continue;

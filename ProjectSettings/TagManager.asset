@@ -14,7 +14,7 @@ TagManager:
   - Water
   - UI
   - Ground
-  - 
+  - Projectile
   - 
   - 
   - 
@@ -48,4 +48,7 @@ TagManager:
     locked: 0
   - name: Entity
     uniqueID: 560903455
+    locked: 0
+  - name: Effect
+    uniqueID: 379688281
     locked: 0

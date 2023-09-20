@@ -51,7 +51,7 @@ namespace Sunshower
 
         public void OnAdd()
         {
-            if (Charm)
+            if (Charm && Owner is Mob mob && !mob.MobData.ResistCharming)
             {
                 ++Manager.IsCharming;
             }
@@ -59,7 +59,7 @@ namespace Sunshower
 
         public void OnRemove()
         {
-            if (Charm)
+            if (Charm && Owner is Mob mob && !mob.MobData.ResistCharming)
             {
                 --Manager.IsCharming;
             }
@@ -160,6 +160,25 @@ namespace Sunshower
                 {
                     buff.OnRemove();
                     _buffs.Remove(current);
+                }
+            }
+
+            if (IsCharming > 0)
+            {
+                if (Owner is Mob mob && (mob.Animation.Skeleton.Skin?.Name ?? mob.DefaultSkin) != mob.CharmingSkin)
+                {
+                    mob.EntitySide = EntitySideType.Friendly;
+                    mob.Animation.Skeleton.SetSkin(mob.CharmingSkin);
+                    mob.Animation.Skeleton.ScaleX = -mob.Animation.Skeleton.ScaleX;
+                }
+            }
+            else
+            {
+                if (Owner is Mob mob && (mob.Animation.Skeleton.Skin?.Name ?? mob.DefaultSkin) != mob.DefaultSkin)
+                {
+                    mob.EntitySide = EntitySideType.Enemy;
+                    mob.Animation.Skeleton.SetSkin(mob.DefaultSkin);
+                    mob.Animation.Skeleton.ScaleX = math.abs(mob.Animation.Skeleton.ScaleX);
                 }
             }
         }

@@ -10,16 +10,27 @@ namespace Sunshower
     public class Stage : StateMachine<Stage>
     {
         [SerializeField] private DataTableManager _dataTable;
+        [SerializeField] private ProjectileManager _projectileManager;
+        [SerializeField] private EffectManager _effectManager;
+
         [SerializeField] private PlayerSpawner _playerSpawner;
         [SerializeField] private MobSpawner _mobSpawner;
         [SerializeField, Min(1)] private int _stageNumber;
+        [SerializeField] private int _nextStageNumber = 0;
 
         public static Stage Instance { get; private set; }
 
         public DataTableManager DataTable => _dataTable;
+
+        public ProjectileManager ProjectileManager => _projectileManager;
+        public EffectManager EffectManager => _effectManager;
+
         public Player ActivePlayer => _playerSpawner.ActivePlayer;
         public PlayerSpawner PlayerSpawner => _playerSpawner;
         public MobSpawner MobSpawner => _mobSpawner;
+
+        public int StageNumber => _stageNumber;
+        public int NextStageNumber => _nextStageNumber;
 
         public StageData StageInformation { get; private set; }
         public StageBeginState BeginState { get; private set; }
@@ -43,6 +54,8 @@ namespace Sunshower
         private void Start()
         {
             Debug.Assert(_dataTable, "DataTableManager 컴포넌트가 연결되어 있지 않습니다!");
+            Debug.Assert(_projectileManager, "ProjectileManager 컴포넌트가 연결되어 있지 않습니다!");
+            Debug.Assert(_effectManager, "EffectManager 컴포넌트가 연결되어 있지 않습니다!");
             Debug.Assert(_playerSpawner, "PlayerSpawner 컴포넌트가 연결되어 있지 않습니다!");
             Debug.Assert(_mobSpawner, "MobSpawner 컴포넌트가 연결되어 있지 않습니다!");
 
@@ -79,7 +92,7 @@ namespace Sunshower
 
         public void Initialize()
         {
-            _timer = 0; // 시작 딜레이
+            _timer = 0.1f; // 시작 딜레이
             _currentTimer = 0;
         }
 
@@ -136,8 +149,14 @@ namespace Sunshower
             }
             else if (owner.MobSpawner.ActiveEnemyMobs.Count == 0)
             {
+                owner.EndState.IsFriendlyWin = true;
                 owner.ChangeState(owner.EndState);
                 return;
+            }
+            else if (owner.ActivePlayer.CurrentState == owner.ActivePlayer.PlayerDeadState)
+            {
+                owner.EndState.IsEnemyWin = true;
+                owner.ChangeState(owner.EndState);
             }
 
             if (owner.LogEnabled)
@@ -154,6 +173,11 @@ namespace Sunshower
 
     public class StageEndState : IState<Stage>
     {
+        public bool IsFriendlyWin { get; set; }
+        public bool IsEnemyWin { get; set; }
+
+        private float _time;
+
         public void Initialize()
         {
         }
@@ -165,7 +189,33 @@ namespace Sunshower
 
         public void Execute(Stage owner)
         {
-            //owner.ChangeState()
+            if (_time >= 2f)
+            {
+                return;
+            }
+            _time += Time.deltaTime;
+
+
+            if (_time < 2f)
+            {
+                return;
+            }
+
+            if (IsFriendlyWin)
+            {
+                if (owner.NextStageNumber > 0)
+                {
+                    SceneManager.LoadSceneAsync($"Stage{owner.NextStageNumber}Scene");
+                }
+                else
+                {
+                    SceneManager.LoadSceneAsync("DialougeScene");
+                }
+            }
+            else
+            {
+                // SceneManager.LoadSceneAsync("TitleScene");
+            }
         }
 
         public void Exit(Stage owner)

@@ -20,8 +20,8 @@ namespace Sunshower
         [SerializeField] private TMP_Text costText;
 
         private static readonly int YeobulID = 1000;
-        private static readonly int YeougusulID = 1001;
-        private static readonly int KaengID = 1002;
+        private static readonly int KaengID = 1001;
+        private static readonly int YeougusulID = 1002;
         private static readonly int YeoubiID = 1003;
 
         private readonly Dictionary<int, Skill> _skills = new();
@@ -33,10 +33,7 @@ namespace Sunshower
         private void Awake()
         {
             UIManager.Instance.RegisterPanel(PanelType.Skill, this);
-            if (Stage.Instance != null)
-            {
-                Stage.Instance.PlayerSpawner.OnPlayerSpawned += OnPlayerSpawned;
-            }
+
         }
 
         protected override void Start()
@@ -45,6 +42,11 @@ namespace Sunshower
 
             costImage.sprite = costDiffTextures[0];
             costText.text = "0";
+
+            if (Stage.Instance != null)
+            {
+                Stage.Instance.PlayerSpawner.OnPlayerSpawned += OnPlayerSpawned;
+            }
         }
 
         private void Update()
@@ -60,20 +62,12 @@ namespace Sunshower
         private void CheckSkillUse()
         {
             var player = Stage.Instance.ActivePlayer;
-            if (player != null)
-            {
-                yeoubul.interactable = _skills[YeobulID].CanUse();
-                yeougusul.interactable = _skills[YeougusulID].CanUse();
-                kaeng.interactable = _skills[KaengID].CanUse();
-                yeoubi.interactable = _skills[YeoubiID].CanUse();
-            }
-            else
-            {
-                yeoubul.interactable = false;
-                yeougusul.interactable = false;
-                kaeng.interactable = false;
-                yeoubi.interactable = false;
-            }
+            var interactable = player != null && player.CurrentState == player.PlayerIdleState;
+
+            yeoubul.interactable = interactable && _skills[YeobulID].CanUse();
+            yeougusul.interactable = interactable && _skills[YeougusulID].CanUse();
+            kaeng.interactable = interactable && _skills[KaengID].CanUse();
+            yeoubi.interactable = interactable && _skills[YeoubiID].CanUse();
         }
 
         private void TargetingGround()
@@ -85,11 +79,13 @@ namespace Sunshower
             else if (Input.GetMouseButtonDown(0))
             {
                 var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out var hit, 100f, LayerMask.GetMask("Ground")))
+                var hit = Physics2D.Raycast(ray.origin, ray.direction, 100f, LayerMask.GetMask("Ground"));
+                if (hit)
                 {
                     var skill = _skills[YeougusulID];
                     skill.Manager.UsePosition = new Vector3(hit.point.x, Stage.Instance.ActivePlayer.transform.position.y, 0);
                     _targetingGround = false;
+                    Stage.Instance.ActivePlayer.ExecuteSkill(YeougusulID);
                 }
                 else
                 {
@@ -97,14 +93,14 @@ namespace Sunshower
                 }
             }
 
-            yeoubul.enabled = !_targetingGround;
-            kaeng.enabled = !_targetingGround;
-            yeoubi.enabled = !_targetingGround;
+            yeoubul.interactable = !_targetingGround;
+            kaeng.interactable = !_targetingGround;
+            yeoubi.interactable = !_targetingGround;
         }
 
         private void OnPlayerSpawned(object sender, Player spawnedPlayer)
         {
-            var data = spawnedPlayer.Info as PlayerData;
+            var data = spawnedPlayer.Data as PlayerData;
 
             foreach (var skill in spawnedPlayer.SkillManager.Skills)
             {
@@ -117,9 +113,6 @@ namespace Sunshower
 
         private void OnPlayerCostChanged(object sender, int changedCost)
         {
-            var player = Stage.Instance.ActivePlayer;
-            var data = player.Info as PlayerData;
-
             costText.text = changedCost.ToString();
             if (_costChangedTween != null && _costChangedTween.IsPlaying())
             {
@@ -133,14 +126,12 @@ namespace Sunshower
 
         public void Yeoubul()
         {
-            Debug.Log("Yeoubul");
-            var skill = _skills[YeobulID];
-            if (!skill.CanUse())
+            var player = Stage.Instance.ActivePlayer;
+            if (player == null)
             {
-                yeoubul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
                 return;
             }
-            skill.Execute();
+            player.ExecuteSkill(YeobulID);
         }
 
         public void Yeougusul()
@@ -164,34 +155,30 @@ namespace Sunshower
 
         public void Kaeng()
         {
-            var skill = _skills[KaengID];
-            if (!skill.CanUse())
+            var player = Stage.Instance.ActivePlayer;
+            if (player == null)
             {
-                yeoubul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
                 return;
             }
-            skill.Execute();
+            player.ExecuteSkill(KaengID);
         }
 
         public void Yeoubi()
         {
-            var skill = _skills[YeoubiID];
-            if (!skill.CanUse())
+            var player = Stage.Instance.ActivePlayer;
+            if (player == null)
             {
-                yeoubul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
                 return;
             }
-            skill.Execute();
+            player.ExecuteSkill(YeoubiID);
         }
 
         public override void HidePanel()
         {
-            throw new System.NotImplementedException();
         }
 
         public override void ShowPanel()
         {
-            throw new System.NotImplementedException();
         }
     }
 }

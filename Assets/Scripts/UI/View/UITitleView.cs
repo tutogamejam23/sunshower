@@ -22,13 +22,14 @@ public class UITitleView : UIView
         UIManager.Instance.RegisterPanel(PanelType.Title, this);
 
         gameStartBtn.onClick.AddListener(() => StartBtn());
+        exitBtn.onClick.AddListener(() => Application.Quit());
     }
 
     void StartBtn()
     {
         fadeImg.DOFade(1f, 0.5f).OnComplete(() =>
         {
-            SceneManager.LoadSceneAsync("DialougeScene");
+            SceneManager.LoadSceneAsync("Stage1Scene");
         });
 
     }

@@ -37,12 +37,12 @@ public class UIManager : Singleton<UIManager>
         if (!panels.ContainsKey(panelState))
         {
             panels.Add(panelState, panel);
-            Debug.Log(panel.name);
+            // Debug.Log(panel.name);
         }
     }
 
     /// <summary>
-    /// 알맞게 View을 Enter/Exit을 한다. 
+    /// 알맞게 View을 Enter/Exit을 한다.
     /// </summary>
     /// <param name="nextState"></param>
     public void ChangePanel(PanelType nextState)
