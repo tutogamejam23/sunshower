@@ -86,7 +86,7 @@ namespace Sunshower
 
             if (_hitEffect != string.Empty)
             {
-                //TODO : 이펙트 매니저에 이펙트 생성 요청
+                Stage.Instance.EffectManager.Play(_hitEffect, transform.position);
             }
 
             if (++_hitCount >= HitCount)

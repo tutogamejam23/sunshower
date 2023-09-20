@@ -33,10 +33,7 @@ namespace Sunshower
         private void Awake()
         {
             UIManager.Instance.RegisterPanel(PanelType.Skill, this);
-            if (Stage.Instance != null)
-            {
-                Stage.Instance.PlayerSpawner.OnPlayerSpawned += OnPlayerSpawned;
-            }
+
         }
 
         protected override void Start()
@@ -45,6 +42,11 @@ namespace Sunshower
 
             costImage.sprite = costDiffTextures[0];
             costText.text = "0";
+
+            if (Stage.Instance != null)
+            {
+                Stage.Instance.PlayerSpawner.OnPlayerSpawned += OnPlayerSpawned;
+            }
         }
 
         private void Update()

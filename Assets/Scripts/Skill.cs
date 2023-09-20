@@ -36,6 +36,14 @@ namespace Sunshower
 
         public bool CanUse()
         {
+            if (Stage.Instance.CurrentState != Stage.Instance.RunningState)
+            {
+                return false;
+            }
+            if (Owner.HP == 0)
+            {
+                return false;
+            }
             if (Manager.Delay > 0f)
             {
                 return false;

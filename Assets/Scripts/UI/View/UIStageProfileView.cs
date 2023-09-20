@@ -14,6 +14,7 @@ using TMPro;
 public class UIStageProfileView : UIView
 {
     [SerializeField] private Button settingBtn;
+    [SerializeField] private CanvasGroup _settingsPanel;
     [SerializeField] private Image hpImg;
     [SerializeField] private Image hpDiffImg;
     [SerializeField] private Image hpValueImg;
@@ -33,6 +34,12 @@ public class UIStageProfileView : UIView
     protected override void Start()
     {
         base.Start();
+
+        _settingsPanel.alpha = 0f;
+        settingBtn.onClick.AddListener(() =>
+        {
+            _settingsPanel.alpha = _settingsPanel.alpha > 0f ? 0f : 1f;
+        });
     }
 
     private void OnPlayerSpawned(object sender, Player spawnedPlayer)
@@ -76,11 +83,9 @@ public class UIStageProfileView : UIView
 
     public override void HidePanel()
     {
-        throw new System.NotImplementedException();
     }
 
     public override void ShowPanel()
     {
-        throw new System.NotImplementedException();
     }
 }

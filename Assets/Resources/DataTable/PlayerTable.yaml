@@ -4,7 +4,7 @@
   IdleAnimation: breath
   DeadAnimation: death
   DeadSFX: fox_kaeng
-  HP: 10000
+  HP: 5000
   MaxCost: 30
   CostUpTime: 1
   Skills: [1000, 1001, 1002, 1003]

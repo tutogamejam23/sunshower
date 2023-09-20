@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using DG.Tweening;
 using Spine;
 using Spine.Unity;
 using Unity.Mathematics;
@@ -30,6 +31,8 @@ namespace Sunshower
         public event EventHandler<(int previous, int current)> OnHPChanged;
         public event EventHandler<int> OnCostChanged;
 
+        private Tween _hitTween;
+
         public int HP
         {
             get => _hp;
@@ -41,7 +44,20 @@ namespace Sunshower
                     return;
                 }
                 var prevHP = _hp;
-                _hp = math.max(math.min(value, Data.HP), 0);
+                var next = math.max(math.min(value, Data.HP), 0);
+
+                var diff = next - _hp;
+                _hp = next;
+
+                if (diff < 0)
+                {
+                    if (_hitTween != null && _hitTween.IsPlaying())
+                    {
+                        _hitTween.Complete();
+                    }
+                    _hitTween = transform.DOPunchPosition(Direction * 0.1f, 0.2f);
+                }
+
                 if (prevHP != _hp)
                 {
                     OnHPChanged?.Invoke(this, (prevHP, _hp));

@@ -16,6 +16,7 @@ namespace Sunshower
         [SerializeField] private PlayerSpawner _playerSpawner;
         [SerializeField] private MobSpawner _mobSpawner;
         [SerializeField, Min(1)] private int _stageNumber;
+        [SerializeField] private int _nextStageNumber = 0;
 
         public static Stage Instance { get; private set; }
 
@@ -27,6 +28,9 @@ namespace Sunshower
         public Player ActivePlayer => _playerSpawner.ActivePlayer;
         public PlayerSpawner PlayerSpawner => _playerSpawner;
         public MobSpawner MobSpawner => _mobSpawner;
+
+        public int StageNumber => _stageNumber;
+        public int NextStageNumber => _nextStageNumber;
 
         public StageData StageInformation { get; private set; }
         public StageBeginState BeginState { get; private set; }
@@ -88,7 +92,7 @@ namespace Sunshower
 
         public void Initialize()
         {
-            _timer = 0; // 시작 딜레이
+            _timer = 0.1f; // 시작 딜레이
             _currentTimer = 0;
         }
 
@@ -145,8 +149,14 @@ namespace Sunshower
             }
             else if (owner.MobSpawner.ActiveEnemyMobs.Count == 0)
             {
+                owner.EndState.IsFriendlyWin = true;
                 owner.ChangeState(owner.EndState);
                 return;
+            }
+            else if (owner.ActivePlayer.CurrentState == owner.ActivePlayer.PlayerDeadState)
+            {
+                owner.EndState.IsEnemyWin = true;
+                owner.ChangeState(owner.EndState);
             }
 
             if (owner.LogEnabled)
@@ -163,6 +173,11 @@ namespace Sunshower
 
     public class StageEndState : IState<Stage>
     {
+        public bool IsFriendlyWin { get; set; }
+        public bool IsEnemyWin { get; set; }
+
+        private float _time;
+
         public void Initialize()
         {
         }
@@ -170,6 +185,34 @@ namespace Sunshower
         public void Enter(Stage owner)
         {
             Debug.Log("Stage End");
+
+            if (_time >= 2f)
+            {
+                return;
+            }
+            _time += Time.deltaTime;
+
+
+            if (_time < 2f)
+            {
+                return;
+            }
+
+            if (IsFriendlyWin)
+            {
+                if (owner.NextStageNumber > 0)
+                {
+                    SceneManager.LoadSceneAsync($"Stage{owner.NextStageNumber}Scene");
+                }
+                else
+                {
+                    SceneManager.LoadSceneAsync("EndingScene");
+                }
+            }
+            else
+            {
+                // SceneManager.LoadSceneAsync("TitleScene");
+            }
         }
 
         public void Execute(Stage owner)

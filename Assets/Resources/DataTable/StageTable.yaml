@@ -1,8 +1,8 @@
 - StageNumber: 1
   PlayerID: 0
-  SpawnDelay: 3
+  SpawnDelay: 4
   Spawner: [200, 200, 200, 200, 200, 201, 201, 201, 201, 200, 200, 202]
 
 - StageNumber: 2
-  SpawnDelay: 3
+  SpawnDelay: 4
   Spawner: [200, 200, 200, 200, 200, 201, 201, 201, 201, 200, 200, 202]

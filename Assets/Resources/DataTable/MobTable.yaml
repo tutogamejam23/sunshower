@@ -12,8 +12,8 @@
   DeadAnimation: death
   MoveSFX: animal_walk
   DeadSFX: gorani_die
-  HP: 30
-  Speed: 20
+  HP: 70
+  Speed: 30
   Range: 3
   Skills: [2002]
 
@@ -24,7 +24,7 @@
   DeadAnimation: Die
   MoveSFX: animal_walk
   DeadSFX: tiger_die
-  HP: 50
+  HP: 130
   Speed: 15
   Range: 3
   Skills: [2003]
@@ -36,7 +36,7 @@
   DeadAnimation: die
   MoveSFX: monster_walk
   DeadSFX: monster_die
-  HP: 100
+  HP: 90
   Speed: 15
   Range: 3
   Skills: [2000]
@@ -48,7 +48,7 @@
   DeadAnimation: Die
   MoveSFX: monster_walk
   DeadSFX: monster_die
-  HP: 200
+  HP: 180
   Speed: 10
   Range: 10
   Skills: [2001]

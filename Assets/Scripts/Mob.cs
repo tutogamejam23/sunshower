@@ -2,12 +2,13 @@ using System;
 using System.Buffers;
 using System.Linq;
 using System.Text;
+using DG.Tweening;
 using Spine;
 using Spine.Unity;
 using Unity.Mathematics;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.Pool;
+using YamlDotNet.Core.Events;
 
 namespace Sunshower
 {
@@ -39,6 +40,8 @@ namespace Sunshower
 
         public int ID => Data.ID;
 
+
+        private Tween _hitTween;
         public int HP
         {
             get => _hp;
@@ -51,7 +54,19 @@ namespace Sunshower
                 }
 
                 // TODO: 여기다 텍스쳐 깜빡이는 효과 넣기
-                _hp = math.max(math.min(value, Data.HP), 0);
+                var next = math.max(math.min(value, Data.HP), 0);
+                var diff = next - _hp;
+                _hp = next;
+
+                if (diff < 0)
+                {
+                    if (_hitTween != null && _hitTween.IsPlaying())
+                    {
+                        _hitTween.Complete();
+                    }
+                    _hitTween = transform.DOPunchPosition(Direction * 0.1f, 0.2f);
+                }
+
                 if (_hp == 0)
                 {
                     ChangeState(MobDeadState);
