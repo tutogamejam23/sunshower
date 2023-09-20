@@ -1,19 +1,14 @@
-using System;
-using System.Buffers;
-using System.Linq;
-using System.Text;
-
 using DG.Tweening;
 
 using Spine;
 using Spine.Unity;
 
+using System;
+
 using Unity.Mathematics;
 
 using UnityEngine;
 using UnityEngine.Pool;
-
-using YamlDotNet.Core.Events;
 
 namespace Sunshower
 {
@@ -64,11 +59,10 @@ namespace Sunshower
 
                 if (diff < 0)
                 {
-                    //if (_hitTween != null && _hitTween.IsPlaying())
-                    //{
-                    //    _hitTween.Complete();
-                    //}
-                    //_hitTween = transform.DOMoveX(transform.position.x + (nockback * -Direction.x), 0.2f);
+                    Animation.GetComponent<Renderer>().SetPropertyBlock(_materialProp);
+                    Animation.transform.DOShakeScale(0.15f, 0.05f);
+                    _hitTime = 0f;
+                    _matChanged = true;
                 }
 
                 if (_hp == 0)
@@ -79,6 +73,9 @@ namespace Sunshower
         }
 
         private int _hp;
+        private float _hitTime;
+        private bool _matChanged;
+        private MaterialPropertyBlock _materialProp;
 
         private void Awake()
         {
@@ -89,6 +86,9 @@ namespace Sunshower
             MobAttackState = new MobAttackState();
             MobDeadState = new MobDeadState();
 
+            _materialProp = new MaterialPropertyBlock();
+            _materialProp.SetColor("_Color", Color.red);
+
             // _random = new Unity.Mathematics.Random((uint)System.DateTime.Now.Ticks);
         }
 
@@ -98,6 +98,21 @@ namespace Sunshower
             MobMoveState.Initialize();
             MobAttackState.Initialize();
             MobDeadState.Initialize();
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            if (_hitTime < 0.15f)
+            {
+                _hitTime += Time.deltaTime;
+            }
+            else if(_matChanged)
+            {
+                Animation.GetComponent<Renderer>().SetPropertyBlock(null);
+                _matChanged = false;
+            }
         }
 
         public void OnActive()
