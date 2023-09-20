@@ -1,8 +1,10 @@
-using System;
-using System.Linq;
 using DG.Tweening;
+
 using Spine;
 using Spine.Unity;
+
+using System;
+
 using Unity.Mathematics;
 
 using UnityEngine;
@@ -31,8 +33,6 @@ namespace Sunshower
         public event EventHandler<(int previous, int current)> OnHPChanged;
         public event EventHandler<int> OnCostChanged;
 
-        private Tween _hitTween;
-
         public int HP
         {
             get => _hp;
@@ -51,11 +51,10 @@ namespace Sunshower
 
                 if (diff < 0)
                 {
-                    if (_hitTween != null && _hitTween.IsPlaying())
-                    {
-                        _hitTween.Complete();
-                    }
-                    _hitTween = transform.DOPunchPosition(Direction * 0.1f, 0.2f);
+                    Animation.GetComponent<Renderer>().SetPropertyBlock(_materialProp);
+                    Animation.transform.DOShakeScale(0.15f, 0.05f);
+                    _hitTime = 0f;
+                    _matChanged = true;
                 }
 
                 if (prevHP != _hp)
@@ -88,6 +87,9 @@ namespace Sunshower
         private int _hp;
         private int _cost;
         private float _costUpTime;
+        private float _hitTime;
+        private bool _matChanged;
+        private MaterialPropertyBlock _materialProp;
 
         private void Awake()
         {
@@ -97,6 +99,9 @@ namespace Sunshower
             PlayerIdleState = new PlayerIdleState();
             PlayerSkillState = new PlayerSkillState();
             PlayerDeadState = new PlayerDeadState();
+
+            _materialProp = new MaterialPropertyBlock();
+            _materialProp.SetColor("_Color", Color.red);
         }
 
         private void OnEnable()
@@ -116,6 +121,16 @@ namespace Sunshower
             {
                 _costUpTime = 0f;
                 Cost += 1;
+            }
+
+            if (_hitTime < 0.15f)
+            {
+                _hitTime += Time.deltaTime;
+            }
+            else if (_matChanged)
+            {
+                Animation.GetComponent<Renderer>().SetPropertyBlock(null);
+                _matChanged = false;
             }
         }
 
