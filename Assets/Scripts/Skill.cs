@@ -120,7 +120,7 @@ namespace Sunshower
             }
 
             // Set animation
-            var animation = Owner.Transform.GetComponent<SkeletonAnimation>();
+            var animation = Owner.Animation;
             var entry = animation.state.SetAnimation(0, Info.Animation, false);
             Manager.Delay = Info.Delay > 0f ? Info.Delay : entry.AnimationEnd;
 
@@ -232,6 +232,7 @@ namespace Sunshower
             {
                 var position = Owner.Transform.position;
                 position.y = UnityEngine.Random.Range(position.y - 1f, position.y + 1f);
+                position.y += 2f;
 
                 Stage.Instance.ProjectileManager.Shot(
                     info.Prefab, position, Owner.Direction, info.Speed, info.HitTarget, info.HitCount, info.OnHit);
