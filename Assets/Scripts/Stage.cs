@@ -185,7 +185,10 @@ namespace Sunshower
         public void Enter(Stage owner)
         {
             Debug.Log("Stage End");
+        }
 
+        public void Execute(Stage owner)
+        {
             if (_time >= 2f)
             {
                 return;
@@ -206,18 +209,13 @@ namespace Sunshower
                 }
                 else
                 {
-                    SceneManager.LoadSceneAsync("EndingScene");
+                    SceneManager.LoadSceneAsync("DialougeScene");
                 }
             }
             else
             {
                 // SceneManager.LoadSceneAsync("TitleScene");
             }
-        }
-
-        public void Execute(Stage owner)
-        {
-            //owner.ChangeState()
         }
 
         public void Exit(Stage owner)

@@ -22,7 +22,7 @@ public class UISettingView : UIView
         _bgmSlider.onValueChanged.AddListener((value) =>
         {
             _audioMixer.SetFloat("Volume_BGM", Mathf.Log10(value) * 20);
-            Debug.Log(_audioMixer.GetFloat("Volume_BGM", out var bgmVolume) ? bgmVolume : 0f);
+            // Debug.Log(_audioMixer.GetFloat("Volume_BGM", out var bgmVolume) ? bgmVolume : 0f);
         });
 
         _sfxSlider.value = _audioMixer.GetFloat("Volume_SFX", out var sfxVolume) ? sfxVolume : 0f;
