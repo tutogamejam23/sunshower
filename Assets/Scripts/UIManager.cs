@@ -1,20 +1,12 @@
-using System;
-using System.Collections;
+using Sunshower.UI;
+
 using System.Collections.Generic;
-using UnityEngine;
-using DG.Tweening;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public enum PanelType
 {
     Title = 0,
     Dialouage,
     Lobby,
-    Stage1,
-    Stage2,
-    Setting,
-    Skill,
 }
 
 /// <summary>

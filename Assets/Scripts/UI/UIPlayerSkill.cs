@@ -1,15 +1,17 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
+
+using System.Collections.Generic;
+
 using TMPro;
+
 using Unity.Mathematics;
+
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Sunshower
+namespace Sunshower.UI
 {
-    public class UISkillView : UIView
+    public class UIPlayerSkill : MonoBehaviour
     {
         [SerializeField] private Button yeoubul;
         [SerializeField] private Button yeougusul;
@@ -32,14 +34,10 @@ namespace Sunshower
 
         private void Awake()
         {
-            UIManager.Instance.RegisterPanel(PanelType.Skill, this);
-
         }
 
-        protected override void Start()
+        private void Start()
         {
-            base.Start();
-
             costImage.sprite = costDiffTextures[0];
             costText.text = "0";
 
@@ -61,6 +59,10 @@ namespace Sunshower
 
         private void CheckSkillUse()
         {
+            if (Stage.Instance == null)
+            {
+                return;
+            }
             var player = Stage.Instance.ActivePlayer;
             var interactable = player != null && player.CurrentState == player.PlayerIdleState;
 
@@ -78,18 +80,25 @@ namespace Sunshower
             }
             else if (Input.GetMouseButtonDown(0))
             {
-                var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                var hit = Physics2D.Raycast(ray.origin, ray.direction, 100f, LayerMask.GetMask("Ground"));
-                if (hit)
+                if (Stage.Instance == null)
                 {
-                    var skill = _skills[YeougusulID];
-                    skill.Manager.UsePosition = new Vector3(hit.point.x, Stage.Instance.MobSpawner.EnemySpawnPosition.y + 1.5f, 0);
                     _targetingGround = false;
-                    Stage.Instance.ActivePlayer.ExecuteSkill(YeougusulID);
                 }
                 else
                 {
-                    yeougusul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
+                    var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    var hit = Physics2D.Raycast(ray.origin, ray.direction, 100f, LayerMask.GetMask("Ground"));
+                    if (hit)
+                    {
+                        var skill = _skills[YeougusulID];
+                        skill.Manager.UsePosition = new Vector3(hit.point.x, Stage.Instance.MobSpawner.EnemySpawnPosition.y + 1.5f, 0);
+                        _targetingGround = false;
+                        Stage.Instance.ActivePlayer.ExecuteSkill(YeougusulID);
+                    }
+                    else
+                    {
+                        yeougusul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
+                    }
                 }
             }
 
@@ -126,6 +135,15 @@ namespace Sunshower
 
         public void Yeoubul()
         {
+            if (!yeoubul.interactable)
+            {
+                return;
+            }
+            if (Stage.Instance == null)
+            {
+                return;
+            }
+
             var player = Stage.Instance.ActivePlayer;
             if (player == null)
             {
@@ -136,25 +154,42 @@ namespace Sunshower
 
         public void Yeougusul()
         {
+            if (!yeougusul.interactable)
+            {
+                return;
+            }
+
+
             if (_targetingGround)
             {
                 _targetingGround = false;
                 return;
             }
 
-            var skill = _skills[YeougusulID];
-            if (!skill.CanUse())
+            if (Stage.Instance != null)
             {
-                yeoubul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
-                return;
+                var skill = _skills[YeougusulID];
+                if (!skill.CanUse())
+                {
+                    yeoubul.GetComponent<RectTransform>().DOShakePosition(0.3f, strength: 3f);
+                    return;
+                }
             }
-
             _targetingGround = true;
 
         }
 
         public void Kaeng()
         {
+            if (!kaeng.interactable)
+            {
+                return;
+            }
+            if (Stage.Instance == null)
+            {
+                return;
+            }
+
             var player = Stage.Instance.ActivePlayer;
             if (player == null)
             {
@@ -165,20 +200,21 @@ namespace Sunshower
 
         public void Yeoubi()
         {
+            if (!yeoubi.interactable)
+            {
+                return;
+            }
+            if (Stage.Instance == null)
+            {
+                return;
+            }
+
             var player = Stage.Instance.ActivePlayer;
             if (player == null)
             {
                 return;
             }
             player.ExecuteSkill(YeoubiID);
-        }
-
-        public override void HidePanel()
-        {
-        }
-
-        public override void ShowPanel()
-        {
         }
     }
 }
