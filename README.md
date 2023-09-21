@@ -1,4 +1,8 @@
-# sunshower
+<p align="center"><img src="https://github.com/tutogamejam23/sunshower/assets/11596519/6992572f-c1e7-41cc-b110-6b6839cc774e" width="600"></p>
+
+-------------
+
+# 여우비
 
 튜토리얼 9월 게임잼
 
@@ -6,7 +10,9 @@
 
 # Unity Version
 
+
 2022.3.9f1
+
 
 # Previews
 
