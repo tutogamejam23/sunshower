@@ -178,7 +178,7 @@
   Commands:
     - Command: SpawnRandomMobs
       Queue:
-        - [201, 200, 200, 200, 201]
+        - [201, 200, 200, 200, 200]
         - [200, 201, 201]
       SpawnDelay: 2
 

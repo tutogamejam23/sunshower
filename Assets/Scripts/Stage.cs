@@ -209,7 +209,7 @@ namespace Sunshower
                 }
                 else
                 {
-                    SceneManager.LoadSceneAsync("EndDialougeScene");
+                    SceneManager.LoadSceneAsync("EndDialogueScene");
                 }
             }
             else
