@@ -188,7 +188,7 @@
   Animation: skill1
   SFX: boss_3
   Delay: 3
-  Cooldown: 30
+  Cooldown: 20
   Commands:
     - Command: GetTargetsInMobRange
       Target: Friendly
