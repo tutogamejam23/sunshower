@@ -40,7 +40,7 @@ namespace Sunshower
 
         public int ID => Data.ID;
 
-        // private Tween _hitTween;
+        private Tween _hitTween;
         public int HP
         {
             get => _hp;
@@ -60,7 +60,11 @@ namespace Sunshower
                 if (diff < 0)
                 {
                     Animation.GetComponent<Renderer>().SetPropertyBlock(_materialProp);
-                    Animation.transform.DOShakeScale(0.15f, 0.05f);
+                    if (_hitTween != null && _hitTween.IsPlaying())
+                    {
+                        _hitTween.Complete();
+                    }
+                    _hitTween = Animation.transform.DOShakeScale(0.15f, 0.05f);
                     _hitTime = 0f;
                     _matChanged = true;
                 }
@@ -108,7 +112,7 @@ namespace Sunshower
             {
                 _hitTime += Time.deltaTime;
             }
-            else if(_matChanged)
+            else if (_matChanged)
             {
                 Animation.GetComponent<Renderer>().SetPropertyBlock(null);
                 _matChanged = false;
@@ -119,6 +123,7 @@ namespace Sunshower
         {
             _hp = Data.HP;
             SkillManager.Clear();
+            Animation.transform.localScale = Vector3.one * 0.8f;
             ChangeState(MobMoveState);
         }
 

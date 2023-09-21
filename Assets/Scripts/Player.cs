@@ -33,6 +33,7 @@ namespace Sunshower
         public event EventHandler<(int previous, int current)> OnHPChanged;
         public event EventHandler<int> OnCostChanged;
 
+        private Tween _hitTween;
         public int HP
         {
             get => _hp;
@@ -52,7 +53,11 @@ namespace Sunshower
                 if (diff < 0)
                 {
                     Animation.GetComponent<Renderer>().SetPropertyBlock(_materialProp);
-                    Animation.transform.DOShakeScale(0.15f, 0.05f);
+                    if (_hitTween != null && _hitTween.IsPlaying())
+                    {
+                        _hitTween.Complete();
+                    }
+                    _hitTween = Animation.transform.DOShakeScale(0.15f, 0.05f);
                     _hitTime = 0f;
                     _matChanged = true;
                 }
