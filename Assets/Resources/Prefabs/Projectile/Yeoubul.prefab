@@ -52,6 +52,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _shotSFX: fox_fire
   _hitEffect: YeoubulHit
+  _hitSFX: hit_yeoubul
 --- !u!61 &-2378486759185026763
 BoxCollider2D:
   m_ObjectHideFlags: 0
