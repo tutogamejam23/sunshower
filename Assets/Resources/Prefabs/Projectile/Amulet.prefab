@@ -179,7 +179,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shotSFX: 
-  _hitEffect: 
+  _hitEffect: AmuletHit
+  _hitSFX: hit_amulet
 --- !u!198 &8513145251429875209
 ParticleSystem:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ namespace Sunshower
     {
         [SerializeField] private string _shotSFX = string.Empty;
         [SerializeField] private string _hitEffect = string.Empty;
+        [SerializeField] private string _hitSFX = string.Empty;
 
         public IObjectPool<Projectile> Pool { get; set; }
         public IGameEntity Owner { get; set; }
@@ -87,6 +88,10 @@ namespace Sunshower
             if (_hitEffect != string.Empty)
             {
                 Stage.Instance.EffectManager.Play(_hitEffect, transform.position);
+            }
+            if (_hitSFX != string.Empty)
+            {
+                SoundManager.instance.PlaySFXAtPosition(_hitSFX, transform.position);
             }
 
             if (++_hitCount >= HitCount)

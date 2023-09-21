@@ -10,8 +10,7 @@
   PrefabPath: Entity/Gorani
   MoveAnimation: run
   DeadAnimation: death
-  MoveSFX: animal_walk
-  DeadSFX: gorani_die
+  DeadSFX: dead_gorani
   HP: 70
   Speed: 30
   Range: 3
@@ -22,8 +21,7 @@
   PrefabPath: Entity/Tiger
   MoveAnimation: WALK
   DeadAnimation: Die
-  MoveSFX: animal_walk
-  DeadSFX: tiger_die
+  DeadSFX: dead_tiger
   HP: 130
   Speed: 15
   Range: 3
@@ -34,8 +32,7 @@
   PrefabPath: Entity/Scout
   MoveAnimation: walk
   DeadAnimation: die
-  MoveSFX: monster_walk
-  DeadSFX: monster_die
+  DeadSFX: dead_enemy
   HP: 90
   Speed: 15
   Range: 3
@@ -46,8 +43,7 @@
   PrefabPath: Entity/Gunman
   MoveAnimation: Walk&Attack
   DeadAnimation: Die
-  MoveSFX: monster_walk
-  DeadSFX: monster_die
+  DeadSFX: dead_enemy
   HP: 180
   Speed: 10
   Range: 10
@@ -58,8 +54,7 @@
   PrefabPath: Entity/Exorcist
   MoveAnimation: walk
   DeadAnimation: death
-  MoveSFX: monster_walk
-  DeadSFX: monster_die
+  DeadSFX: dead_enemy
   HP: 1000
   Speed: 7
   Range: 12

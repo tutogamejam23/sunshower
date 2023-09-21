@@ -96,7 +96,7 @@
   Name: 정찰병 일반 공격
   Description: ""
   Animation: attack
-  SFX: monster_axe
+  SFX: attack_axe
   Delay: 1
   Commands:
     - Command: GetTargetsInMobRange
@@ -110,7 +110,7 @@
   Name: 총잡이 일반 공격
   Description: ""
   Animation: Walk&Attack
-  SFX: monster_gun
+  SFX: attack_gun
   Delay: 2
   Commands:
     - Command: GetTargetsInMobRange
@@ -122,7 +122,7 @@
 
 - ID: 2002
   Name: 고라니 일반 공격
-  SFX: gorani_attack
+  SFX: attack_gorani
   Description: ""
   Animation: attack
   Delay: 1
@@ -138,7 +138,7 @@
   Name: 호랑이 일반 공격
   Description: ""
   Animation: Attack
-  SFX: tiger_attack
+  SFX: attack_tiger
   Delay: 1.2
   Commands:
     - Command: GetTargetsInMobRange
