@@ -174,11 +174,11 @@
   Animation: skill2
   SFX: boss_2
   Delay: 3
-  Cooldown: 20
+  Cooldown: 30
   Commands:
     - Command: SpawnRandomMobs
       Queue:
-        - [201, 200, 200, 200, 200]
+        - [201, 200, 200, 200]
         - [200, 201, 201]
       SpawnDelay: 2
 
@@ -188,7 +188,7 @@
   Animation: skill1
   SFX: boss_3
   Delay: 3
-  Cooldown: 30
+  Cooldown: 20
   Commands:
     - Command: GetTargetsInMobRange
       Target: Friendly
