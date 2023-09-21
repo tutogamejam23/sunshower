@@ -1,6 +1,7 @@
 using DG.Tweening;
 
 using System.Collections.Generic;
+using System.Linq;
 
 using TMPro;
 
@@ -10,9 +11,12 @@ using UnityEngine.UI;
 
 namespace Sunshower.UI
 {
+
     [RequireComponent(typeof(CanvasGroup))]
     public class UIGameSettings : MonoBehaviour
     {
+        public Resolution[] SupportResolutions { get; private set; }
+
         [SerializeField] private Button closeButton;
         [SerializeField] private TMP_Dropdown resolutionDropdown;
         [SerializeField] private TMP_Dropdown fullScreenModeDropdown;
@@ -22,9 +26,15 @@ namespace Sunshower.UI
 
         private void Awake()
         {
+            SupportResolutions = Screen.resolutions
+                .Where(r => r.height >= 720)
+                // .Where(r => r.refreshRateRatio.Equals(Screen.mainWindowDisplayInfo.refreshRate))
+                .ToArray();
+
             closeButton.onClick.AddListener(Close);
             InitializeResolutionSettings(resolutionDropdown);
             resolutionDropdown.onValueChanged.AddListener(OnResolutionChanged);
+            InitializeFullScreenSettings();
             fullScreenModeDropdown.onValueChanged.AddListener(OnFullScreenModeChanged);
             bgmSlider.onValueChanged.AddListener(OnBGMVolumeChanged);
             sfxSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
@@ -46,13 +56,9 @@ namespace Sunshower.UI
             closeButton.interactable = true;
         }
 
-        private void Update()
-        {
-        }
-
         private void InitializeResolutionSettings(TMP_Dropdown dropdown)
         {
-            var resolutions = Screen.resolutions;
+            var resolutions = SupportResolutions;
             var current = Screen.currentResolution;
 
             var options = new List<TMP_Dropdown.OptionData>();
@@ -75,37 +81,57 @@ namespace Sunshower.UI
             dropdown.SetValueWithoutNotify(idx);
         }
 
+        private void InitializeFullScreenSettings()
+        {
+            var options = new List<TMP_Dropdown.OptionData>
+            {
+                new TMP_Dropdown.OptionData("전체 화면"),
+                new TMP_Dropdown.OptionData("창 모드")
+            };
+
+            fullScreenModeDropdown.options = options;
+            fullScreenModeDropdown.SetValueWithoutNotify(Screen.fullScreen ? 0 : 1);
+        }
+
+
         private void OnResolutionChanged(int index)
         {
-            var resolution = Screen.resolutions[index];
-            var mode = Screen.fullScreenMode;
-
-            Screen.SetResolution(resolution.width, resolution.height, mode, resolution.refreshRateRatio);
+            var resolution = SupportResolutions[index];
+            Debug.Log(resolution.ToString());
+            // Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreenMode, resolution.refreshRateRatio);
+            Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreenMode);
+            //var current = Screen.currentResolution;
+            //for (int i = 0; i < SupportResolutions.Length; i++)
+            //{
+            //    var r = SupportResolutions[i];
+            //    if (r.width == current.width &&
+            //        r.height == current.height &&
+            //        r.refreshRateRatio.Equals(current.refreshRateRatio))
+            //    {
+            //        resolutionDropdown.value = i;
+            //        break;
+            //    }
+            //}
+            //fullScreenModeDropdown.value = Screen.fullScreen ? 0 : 1;
         }
 
         private void OnFullScreenModeChanged(int index)
         {
-            // 0: 전체 창모드=FullScreenMode.FullScreenWindow
-            // 1: 전체 화면=FullScreenMode.ExclusiveFullScreen
-            // 2: 창모드=FullScreenMode.Windowed
+            Screen.fullScreen = index == 0;
 
-            switch (index)
-            {
-                case 0:
-                    Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-                    break;
-
-                case 1:
-                    Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-                    break;
-
-                case 2:
-                    Screen.fullScreenMode = FullScreenMode.Windowed;
-                    break;
-
-                default:
-                    break;
-            }
+            //var current = Screen.currentResolution;
+            //for (int i = 0; i < SupportResolutions.Length; i++)
+            //{
+            //    var r = SupportResolutions[i];
+            //    if (r.width == current.width &&
+            //        r.height == current.height &&
+            //        r.refreshRateRatio.Equals(current.refreshRateRatio))
+            //    {
+            //        resolutionDropdown.value = i;
+            //        break;
+            //    }
+            //}
+            //fullScreenModeDropdown.value = Screen.fullScreen ? 0 : 1;
         }
 
         private void OnBGMVolumeChanged(float value)
