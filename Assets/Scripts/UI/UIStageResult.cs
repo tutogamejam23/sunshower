@@ -40,6 +40,7 @@ namespace Sunshower.UI
 
             transform.anchoredPosition = move;
             canvasGroup.alpha = 0f;
+            gameObject.SetActive(true);
             canvasGroup.gameObject.SetActive(true);
             targetPanel.gameObject.SetActive(true);
 

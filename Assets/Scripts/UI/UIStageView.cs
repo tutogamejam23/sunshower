@@ -26,6 +26,7 @@ namespace Sunshower.UI
         private void OnStageEnded(object sender, StageResult result)
         {
             Debug.Log("Stage Ended!");
+            // stageResultUI.gameObject.SetActive(true);
             stageResultUI.ShowResultPanel(result);
         }
 
