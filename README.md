@@ -1,6 +1,6 @@
-<p align="center"><img src="https://github.com/tutogamejam23/sunshower/assets/11596519/6992572f-c1e7-41cc-b110-6b6839cc774e" width="600"></p>
+<p align="center"><img src="./previews/title.png" width="600"></p>
 
--------------
+---
 
 # 여우비
 
@@ -10,24 +10,22 @@
 
 # Unity Version
 
-
 2022.3.9f1
-
 
 # Previews
 
-![preview01](https://github.com/tutogamejam23/sunshower/assets/11596519/05f523c9-c355-4b49-a421-8761a21585eb)
+![preview01](./previews/preview01.png)
 
-![preview02](https://github.com/tutogamejam23/sunshower/assets/11596519/360abb13-8362-41d8-88f4-f9f9edfc8c4d)
+![preview02](./previews/preview02.png)
 
-![preview03](https://github.com/tutogamejam23/sunshower/assets/11596519/92fbf603-d9e1-4b8a-a3ea-075073a1e2a9)
+![preview03](./previews/preview03.png)
 
-![preview04](https://github.com/tutogamejam23/sunshower/assets/11596519/339896d1-6bfe-43b9-914f-cc24442c45b7)
+![preview04](./previews/preview04.png)
 
-![preview05](https://github.com/tutogamejam23/sunshower/assets/11596519/fe0fb898-da4f-4b97-8b6a-8e9bee04fd49)
+![preview05](./previews/preview05.png)
 
-![preview06](https://github.com/tutogamejam23/sunshower/assets/11596519/f5dc8612-a408-4c08-a701-2aa6f0e5625b)
+![preview06](./previews/preview06.png)
 
-![preview07](https://github.com/tutogamejam23/sunshower/assets/11596519/56dc43d1-39c3-4bda-8930-160b23976b92)
+![preview07](./previews/preview07.png)
 
-![preview08](https://github.com/tutogamejam23/sunshower/assets/11596519/bf17bc5d-0ca1-4821-9c8d-cd5711d60664)
+![preview08](./previews/preview08.png)
