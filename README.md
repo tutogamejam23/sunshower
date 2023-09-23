@@ -2,6 +2,8 @@
 
 ---
 
+<p align="center"><img src="./Assets/Resources/Sprite/UI/여우비2.png" width="500"></p>
+
 # 여우비
 
 튜토리얼 9월 게임잼
